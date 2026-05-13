@@ -74,6 +74,19 @@
 \setcounter{page}{1}
 
 \section{Background}
+Since the formulation of quantum mechanics, understanding the quantum many-body physics, namely the emergent collective behavior arising from many interacting quantum particles, has become one of the central problems in physics, chemistry and material science. 
+This problem becomes interesting, because the principle behind the quantum many-body system is simply the Schrodinger equation (plus the particle symmetry or Pauli exclusion principle?) $H \ket{\Psi(t)}=i \partial_t \ket{\Psi(t)}$, while the many-body wavefunction $\ket{\Psi}$ is in general of exponential complexity to the particle number $N$, thus impossible to precisely represent the state in classical computers for relatively large $N$ around 10 to 20.
+
+In different settings, people will have different interest of the system. 
+One major problem to solve is the ground state problem $H\ket{\Psi}=E\ket{\Psi}$ of the quantum many-body system, in which we only need the ground state energy $E_g$, sometimes also the ground state $\ket{\Psi_g}$. 
+People have developed multiple methods to deal with ground state problem, based on the type of system and the accuracy needed, we have methods like Hartree-Fock, couple cluster (?), DMRG, ... \cite{}
+In lots of systems, the ground state could exhibit the area-law entanglement, so we can use tensor network to efficiently represent it \cite{}. 
+However, in the non-equilibrium setup, we would need to deal with the time evolution of the state $\ket{\Psi(t)}$, this state typically exhibit an exponential blowup of complexity, due to the dynamical growth of the entanglement entropy \cite{}. 
+This poses a fundamental challenge.
+
+On the current method deal with this problem:
+
+
 
 
 
