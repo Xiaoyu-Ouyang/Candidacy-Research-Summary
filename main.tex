@@ -153,7 +153,6 @@ This motivates the question central to this summary: can the temporal environmen
 
 \subsection{Ensemble projection}
 
-
 \section{Methods and Results}
 
 \subsection{MPO+MPS compression methods}
@@ -197,11 +196,98 @@ It may require many sweeps, can converge slowly, and can fail to converge for di
  These methods show a basic tradeoff in MPO-MPS compression: direct compression is reliable but expensive, zip-up is fast but locally informed, SRC is fast and globally randomized, and fitting is variationally flexible but iterative.
  The density-matrix and transfer-matrix based methods discussed next provide a different route, in which the truncation subspace is selected from reduced environments rather than from direct SVDs, randomized projections, or variational sweeps, and we will focus on the use of them during the work of spacetime tensor network contraction.
 
- 
+ \begin{figure}
+     \centering
+     \includegraphics[width=1\linewidth]{RDM_Compression.png}
+     \caption{RDM compression of MPS $A$ by eigenvalue decomposition}
+     \label{fig:rdmCompression}
+ \end{figure}
+
+The density-matrix compression method \cite{grayQuimbPythonPackage2018, TensorNetwork} selects the truncation subspace from reduced density matrices of the target tensor network.
+In the simplest MPS compression problem shown in Fig.~\ref{fig:rdmCompression}, the target is to approximate a high-bond-dimension MPS \(A\) by a lower-bond-dimension MPS \(A'\). Instead of locally truncating each bond by an SVD of a single tensor, one first forms the squared network \(A\otimes A^\dagger\), then partially traces out degrees of freedom to obtain reduced density matrices for successive bipartitions. 
+Diagonalizing these reduced density matrices gives the dominant basis vectors \(U_i\), and keeping only the eigenvectors with the largest eigenvalues defines the compressed tensors of \(A'\).
+
+Operationally, the algorithm proceeds from one boundary of the chain.
+One first contracts environments \(E_i\) of the squared network \(A\otimes A^\dagger\), then constructs the reduced density matrix for the last exposed site, for example \(\rho_6=\mathrm{Tr}_{1\cdots5}[A\otimes A^\dagger]\).
+After diagonalizing \(\rho_6\), the leading eigenvectors define \(U_6\).
+The algorithm then moves leftward: the already selected \(U_6\) is used to rotate and truncate the basis of the next reduced density matrix, \(\rho'_{56}\), whose leading eigenvectors define \(U_5\).
+Repeating this procedure produces \(U_4,U_3,\ldots\), and finally the first tensor \(A'_1\), yielding a compressed MPS \(A'\) in a canonical gauge.
+The key point is that each local tensor is chosen from the dominant eigenspace of a reduced environment, so the truncation is informed by the norm of the full target network, not only by a single local tensor.
+
+For MPO-MPS multiplication, the same idea is applied to the product \(W\ket{\psi}\).
+Rather than explicitly forming the enlarged MPS with bond dimension \(D\chi_{\mathrm{in}}\) and then compressing it, the density-matrix algorithm builds reduced density matrices of the squared MPO-MPS product \((W\ket{\psi})(W\ket{\psi})^\dagger\).
+The leading eigenvectors of these reduced density matrices define the compressed output MPS \(\ket{\eta}\approx W\ket{\psi}\) with bond dimension \(\chi\).
+
+Density-matrix compression is theoretically close to direct contract-then-compress: both select the dominant Schmidt subspace of the target \(W\ket{\psi}\) for a given output bond dimension.
+The difference is procedural. 
+Direct compression first forms the enlarged product MPS and then truncates it by canonical SVDs, whereas the density-matrix method obtains the same truncation subspaces from reduced density matrices of the doubled network \((W\ket{\psi})(W\ket{\psi})^\dagger\).
+This makes the method accurate and non-iterative, and more globally informed than zip-up or local greedy truncation, while avoiding the convergence issues of variational fitting.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{RTM_Compression.png}
+    \caption{RTM compression of MPS $A, B$ by SVD}
+    \label{fig:rtmCompression}
+\end{figure}
+
+Reduced-transition-matrix (RTM) compression is closely analogous to density-matrix compression, but the object being preserved is different. 
+In density-matrix compression, one constructs \(A\otimes A^\dagger\) and selects the dominant subspace of a single MPS \(A\), so the truncation is optimized for approximating \(A\) in norm.
+In RTM compression, one instead starts from two MPSs, denoted here by \(A\) and \(B\), and constructs the mixed transition network \(A\otimes B\). 
+The target is not to approximate either \(A\) or \(B\) individually, but to preserve their contraction, or more generally the contraction of a left and right temporal boundary appearing in a spacetime tensor network.
+
+For a bipartition of the temporal chain, the reduced transition matrix is obtained by tracing out the complementary temporal degrees of freedom from the mixed object \(A\otimes B\).
+Schematically, one may write
+\begin{equation}
+    \rho^{AB}_{i\cdots N}=\mathrm{Tr}_{1\cdots i-1}[A\otimes B]
+\end{equation}
+up to normalization by the full overlap.
+
+Unlike a usual reduced density matrix, \(\rho^{AB}\) is generally non-Hermitian and need not have positive eigenvalues.
+Therefore, the robust truncation is not an eigenvalue decomposition, but an SVD,
+\begin{equation}
+    \rho^{AB} \simeq U S V^\dagger 
+\end{equation}
+
+The leading left and right singular vectors define two different truncation bases: \(U\) is absorbed into the tensors of \(A\), while \(V^\dagger\) is absorbed into the tensors of \(B\). 
+Repeating this procedure along the temporal chain produces compressed MPSs \(A'\) and \(B'\) whose bond dimension is reduced, but whose mutual contraction is preserved as accurately as possible.
+
+The algorithm shown in Fig.~\ref{fig:rtmCompression} follows the same sweeping structure as the density-matrix algorithm. 
+One first builds environments of the mixed network \(A\otimes B\).
+At the right boundary, the reduced transition matrix \(\rho_6=\mathrm{Tr}_{1\cdots5}[A\otimes B]\) is decomposed by SVD, giving \(U_6\), \(S_6\), and \(V_6^\dagger\).
+The left singular vectors \(U_6\) define the compressed basis for the \(A\) boundary, while the right singular vectors \(V_6^\dagger\) define the corresponding compressed basis for the \(B\) boundary.
+The procedure then moves leftward, constructing \(\rho'_{56}\), \(\rho'_{456}\), and so on, each time using the previously selected bases and keeping only the dominant singular directions.
+At the end of the sweep, the compressed pair \(A'\) and \(B'\) is obtained.
+
+RTM compression \cite{Carignano2024TemporalEntropy, carignanoITransversejlLibraryTransverse2025, carignanoOvercomingEntanglementBarrier2025} is directly adapted to the quantity computed in transverse tensor-network contraction. 
+Standard RDM compression can be gauge-dependent for non-Hermitian transfer matrices: a gauge transformation can make the individual temporal MPSs appear easier or harder to compress without changing the final network contraction.
+RTM compression avoids this mismatch by selecting the subspace from the mixed left-right transition matrix itself. 
+Thus the retained singular vectors are chosen according to their contribution to the final overlap, rather than according to the individual norms of \(A\) and \(B\).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{RTM_and_RDM_error.png}
+    \caption{Overlap error distribution for RTM and RDM compression on 1000 random MPS pairs. Each pair has length \(L=8\) and initial bond dimension \(12\), and is compressed to bond dimension \(6\). The error is measured as \(\left|\langle \psi_1'|\psi_2'\rangle-\langle \psi_1|\psi_2\rangle\right|\). RTM compression preserves the overlap much more accurately than separately compressing the two MPSs by RDM compression.}
+    \label{fig:rtmRdmError}
+\end{figure}
+
+To test whether RTM compression preserves the contraction-relevant information better than separate RDM compression, we first benchmarked the two methods on random MPS pairs.
+For each sample, two random high-bond-dimension MPSs \(\ket{\psi_1}\) and \(\ket{\psi_2}\) of length \(L=8\) were generated with initial bond dimension \(12\).
+Both methods were then used to compress the pair to bond dimension \(6\).
+For RDM compression, each MPS was compressed separately according to its own reduced density matrices.
+For RTM compression, the two MPSs were compressed together using the reduced transition matrix constructed from the mixed network \(\ket{\psi_2}\bra{\psi_1}\), so that the truncation basis was selected to preserve the overlap between the two states.
+
+The resulting overlap errors are shown in Fig.~\ref{fig:rtmRdmError}. 
+The RTM-compressed pairs are strongly concentrated near zero error, while the RDM-compressed pairs show a much broader distribution with a long tail.
+RTM compression instead keeps the singular directions that contribute directly to the mixed contraction, leading to substantially smaller overlap error at the same output bond dimension.
 
 \subsection{1D spacetime tensor network contraction}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{1D_TN_amplitude.png}
+    \caption{Enter Caption}
+    \label{fig:placeholder}
+\end{figure}
 
-\
 
 On finite tree and infinite tree
 
