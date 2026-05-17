@@ -281,12 +281,63 @@ The RTM-compressed pairs are strongly concentrated near zero error, while the RD
 RTM compression instead keeps the singular directions that contribute directly to the mixed contraction, leading to substantially smaller overlap error at the same output bond dimension.
 
 \subsection{1D spacetime tensor network contraction}
+
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_TN_amplitude.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Spatial contraction of a one-dimensional spacetime tensor network for the amplitude \(\langle \mathbf n|\psi(t)\rangle\). After Trotterizing the time evolution, each spatial column is interpreted as a temporal MPO \(E_i\). Contracting columns from the left and right produces temporal MPS boundaries \(\langle L_i|\) and \(|R_i\rangle\), and the full amplitude can be evaluated as their overlap across any spatial cut.}
+    \label{fig:1dTnAmplitude}
 \end{figure}
+
+For one-dimensional real-time dynamics, the amplitude \(\langle \mathbf n|\psi(t)\rangle\) can be written as a two-dimensional spacetime tensor network. 
+Starting from an initial state \(\ket{\psi_0}\), the time-evolved state is \(\ket{\psi(t)}=U(t)\ket{\psi_0}\). 
+After a Trotter decomposition of \(U(t)\), the tensor network has one direction corresponding to space and the other corresponding to time. 
+Fixing the final computational-basis configuration \(\mathbf n\) at the top boundary turns the network into a scalar contraction for the amplitude \(\langle \mathbf n|U(t)|\psi_0\rangle\).
+
+Instead of contracting this network in the time direction, which corresponds to ordinary Schrödinger-picture MPS time evolution, one can contract it in the spatial direction \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,carignanoOvercomingEntanglementBarrier2025}.
+In this transverse picture, each spatial column of the spacetime network is grouped into a temporal MPO \(E_i\), whose physical indices live along the time direction.
+The partial contraction of all columns to the left of site \(i\) defines a left temporal MPS \(\langle L_i|\), while the partial contraction of all columns to the right defines a right temporal MPS \(|R_i\rangle\).
+Applying one more column updates these temporal boundaries as
+\begin{equation}
+\langle L_{i+1}|=\langle L_i|E_{i+1},
+\qquad
+|R_i\rangle=E_i|R_{i+1}\rangle    
+\end{equation}
+With exact contractions, the amplitude is independent of the spatial cut and can be evaluated as
+\begin{equation}
+    \langle \mathbf n|\psi(t)\rangle=\langle L_i|R_{i+1}\rangle
+\end{equation}
+for any \(i\). 
+In practice, however, each application of a temporal MPO increases the bond dimension of the temporal MPS, so compression is required after each spatial step.
+
+This formulation changes the object being compressed. 
+Standard MPS time evolution attempts to represent the full state \(\ket{\psi(t)}\), whose spatial entanglement can grow rapidly after a quench.
+Transverse contraction instead represents the temporal boundary states \(\langle L_i|\) and \(|R_i\rangle\), whose bond dimension is controlled by temporal correlations in the spacetime network.
+For amplitude calculations, the relevant accuracy criterion is therefore not the norm error of each temporal MPS separately, but the error in their final overlap \(\langle L_i|R_{i+1}\rangle\). 
+This is the reason RTM compression, which selects the truncation basis from the mixed left-right transition matrix, is naturally suited to this contraction problem, as we will show in this report later.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.75\linewidth]{1D_TN_observable.png}
+    \caption{Folded spacetime tensor network for a local observable \(O(t)=\langle \psi(t)|\hat O|\psi(t)\rangle\). The forward and backward time-evolution layers are paired into a folded temporal tensor network. Contracting the environment from the left and right gives temporal MPS boundaries \(\langle L|\) and \(|R\rangle\), while the site containing the local observable defines a modified temporal MPO \(E_O\). The expectation value is then obtained as \(\langle L|E_O|R\rangle\).}
+    \label{fig:1dTnObservable}
+\end{figure}
+
+The same construction applies to local observables. 
+For an operator \(\hat O\) supported on one or a few sites, the expectation value is
+\begin{equation}
+O(t)=\langle \psi(t)|\hat O|\psi(t)\rangle=\langle \psi_0|U^\dagger(t)\hat O U(t)|\psi_0\rangle
+\end{equation}
+After Trotterizing both \(U(t)\) and \(U^\dagger(t)\), this becomes a double-layer spacetime tensor network, or equivalently a Keldysh contour, with a forward branch and a backward branch.
+A direct transverse contraction is possible, but it is more efficient to fold the network in the time direction by pairing the forward and backward tensors at the same spatial location \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,Carignano2024TemporalEntropy}. 
+After folding, each spatial column becomes a folded temporal MPO whose local physical dimension contains both the ket and bra time indices.
+For sites away from the support of \(\hat O\), the folded column defines an environment temporal MPO \(E_i\). 
+The column containing the local observable is modified and denoted by \(E_O\). 
+Contracting all columns to the left gives a left temporal MPS \(\langle L|\), while contracting all columns to the right gives a right temporal MPS \(|R\rangle\). The local expectation value can then be written as
+\begin{equation}
+O(t)=\langle L|E_O|R\rangle .
+\end{equation}
+In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environments, or influence-functional MPSs, for the local subsystem containing the observable. The local observable itself is treated as a small subsystem tensor \(E_O\), while the rest of the chain is compressed into the two temporal boundary MPSs.
 
 
 On finite tree and infinite tree
