@@ -156,9 +156,48 @@ This motivates the question central to this summary: can the temporal environmen
 
 \section{Methods and Results}
 
-\subsection{MPO+MPS compression}
+\subsection{MPO+MPS compression methods}
 
+When applying an MPO \(W\) to an MPS \(\ket{\psi}\), the exact product \(W\ket{\psi}\) is again an MPS, but its bond dimension is enlarged from \(\chi_{\mathrm{in}}\) to roughly \(D\chi_{\mathrm{in}}\), $D$ the bond dimension of the MPO.
+The purpose of MPO-MPS compression is therefore to construct a lower-bond-dimension approximation \(\ket{\eta}\approx W\ket{\psi}\), with bond dimension at most \(\chi\), while retaining the information relevant to later contractions or observables. 
+Different compression algorithms differ mainly in whether they first form the enlarged product explicitly, whether they optimize the output MPS variationally, and whether the truncation uses local or global information about the tensor-network environment.
 
+The most straightforward approach is the direct, or contract-then-compress, method \cite{grayQuimbPythonPackage2018}.
+It first contracts the MPO and MPS site by site to form the exact enlarged MPS representation of \(W\ket{\psi}\), then brings this enlarged MPS into canonical form and performs standard SVD truncations to reduce the bond dimension.
+This method is simple, robust, and works directly with singular values, which can make it numerically precise.
+Its main drawback is cost: because it temporarily constructs the enlarged bond dimension \(D\chi_{\mathrm{in}}\), the scaling is relatively expensive, roughly \(O(nD^3\chi_{\mathrm{in}}^3)\) for fixed physical dimension in the standard estimate.
+It is therefore useful as a reliable baseline or for small bond dimensions, but becomes inefficient when the MPO bond dimension or input MPS bond dimension is large.
+
+The zip-up method was introduced as a faster alternative for MPO-MPS multiplication \cite{stoudenmireMinimallyEntangledTypical2010a}.
+Instead of forming the full enlarged product first, it sweeps from one end of the chain to the other, locally absorbing the MPO tensors into the MPS tensors and immediately truncating the growing bond dimension.
+In this sense, the target is still \(\ket{\eta}\approx W\ket{\psi}\), but the approximation is constructed progressively, before the exact product is ever fully formed.
+Its cost is much lower than direct compression, with a typical fixed-\(d\) scaling comparable to \(O(nD\chi_{\mathrm{in}}\chi^2)\), making it attractive for repeated MPO applications in time evolution.
+The weakness is that each truncation is made using only a partial or pseudo-canonical environment, rather than the full global environment of the final product.
+As a result, zip-up is fast and often sufficiently accurate, but can be noticeably less accurate than more globally informed methods; it is also most natural when a fixed output bond dimension is specified.
+
+Successive randomized compression (SRC) is a more recent single-pass method for the same compressed MPO-MPS product \cite{camanoSuccessiveRandomizedCompression2026b}.
+The idea is to avoid both the enlarged exact product and iterative variational fitting by using randomized low-rank projections to identify the important subspace of the target \(W\ket{\psi}\) successively along the chain.
+Operationally, SRC constructs the output MPS through a sequence of randomized QB decompositions of effective tensor-network unfoldings.
+If \(W\ket{\psi}\) is exactly representable with bond dimension \(\chi\), SRC can recover it with probability one; otherwise, it gives a randomized compressed approximation.
+Its asymptotic cost is comparable to the fastest methods, approximately \(O(ndD\chi_{\mathrm{in}}\chi(\chi_{\mathrm{in}}+\chi+dD))\), or \(O(nD\chi^3)\) in the common simplified regime \(d=O(1)\), \(D\leq \chi\), and \(\chi_{\mathrm{in}}\sim \chi\).
+The advantage is that SRC is one-shot, fast, and often much more accurate than zip-up at similar cost.
+The main limitation is that it is randomized and typically controlled by the chosen output bond dimension, so accuracy should be checked by oversampling or comparison with more accurate compression on smaller cases.
+
+The variational fitting method formulates MPO-MPS compression as an optimization problem \cite{grayQuimbPythonPackage2018}:
+\begin{equation}
+    \min_{\ket{\eta}\in \mathrm{MPS}_{\chi}} \| \ket{\eta}-W\ket{\psi}\|^2 .
+\end{equation}
+Instead of constructing \(W\ket{\psi}\) explicitly, it optimizes the tensors of \(\ket{\eta}\) by sweeping through the chain, in close analogy with one-site or two-site DMRG.
+The target is therefore globally defined, and in principle the method can find a high-quality compressed MPS at relatively low per-sweep cost, again comparable to \(O(nD\chi_{\mathrm{in}}\chi^2)\) up to physical-dimension and local-contraction factors.
+The advantage is flexibility: fitting can use a good initial guess, can optimize sums of tensor networks, and can refine a fast approximate result such as zip-up.
+The drawback is that it is iterative and nonconvex. 
+It may require many sweeps, can converge slowly, and can fail to converge for difficult MPOs, especially long-range or poorly conditioned operators.
+ For this reason, fitting is often best used as a refinement step rather than the only compression method.
+
+ These methods show a basic tradeoff in MPO-MPS compression: direct compression is reliable but expensive, zip-up is fast but locally informed, SRC is fast and globally randomized, and fitting is variationally flexible but iterative.
+ The density-matrix and transfer-matrix based methods discussed next provide a different route, in which the truncation subspace is selected from reduced environments rather than from direct SVDs, randomized projections, or variational sweeps, and we will focus on the use of them during the work of spacetime tensor network contraction.
+
+ 
 
 \subsection{1D spacetime tensor network contraction}
 
