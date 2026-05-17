@@ -349,15 +349,15 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Finite_Observable.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Finite-chain local observable benchmark for the folded spacetime tensor network. The model is the same length-\(N=18\) one-dimensional transverse-field Ising chain used in Fig.~\ref{fig:1dFiniteAmplitude}, with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the middle-site magnetization \(Z_{N/2}(t)\). TEBD results provide the benchmark, while folded and unfolded transverse contractions are compared using RDM, RTM, and fidelity-fitting based compression. The folded RTM compression gives the most accurate low-bond-dimension result among the tested transverse-contraction schemes.}
+    \label{fig:1dFiniteObservable}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{1D_Infinite_Amplitude.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Infinite-chain Loschmidt amplitude per site computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\), the temporal MPS is updated by a power method until convergence. The plotted free-energy rate, \(f(t)=-\log|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle|/N\), is compared with the analytical result. RTM compression remains stable and follows the analytical curve more closely than RDM compression at the same temporal bond dimensions \(\chi=8\) and \(\chi=16\).}
+    \label{fig:1dInfiniteAmplitude}
 \end{figure}
 
 
@@ -365,16 +365,16 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Infinite_Entropy.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller and smoother than the RDM entropy for the tested bond dimensions. This supports the use of RTM compression for overlap-preserving transverse contraction.}
+    \label{fig:1dInfiniteEntropy}
 \end{figure}
 
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{1D_Infinite_Observable.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Infinite-chain local observable computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\), the temporal MPS is updated by a power method until convergence. The plotted magnetization \(Z(t)\) is compared against a finite-\(N\) TEBD benchmark. RTM compression with temporal bond dimension \(\chi=8\) tracks the benchmark more closely than RDM compression over the shown time window.}
+    \label{fig:1dInfiniteObservable}
 \end{figure}
 
 \subsection{Tree spacetime tensor network contraction}
@@ -382,24 +382,24 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{Message_Propagation.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Environment-dependent message propagation on a finite tree tensor network. In standard density-matrix message compression, an outgoing message such as \(m_{3\to4}\) is compressed from the local tensor \(T_3\) and incoming messages \(m_{1\to3}\) and \(m_{2\to3}\). In the transition-matrix version, the compression of \(m_{3\to4}\) also depends on the environment message \(m_{4\to3}\), selecting a truncation subspace adapted to the contraction in which the message will be used.}
+    \label{fig:messagePropagation}
 \end{figure}
 
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_Finite_Amplitude.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Finite-tree Loschmidt amplitude computed by message propagation. The model is a transverse-field Ising Hamiltonian on a finite binary tree of depth \(4\), with longitudinal field \(h_z=0.6\), transverse field \(h_x=-1.0\), and initial state \(\ket{\mathbf 0}\). The panels compare \(\left|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle\right|\) for different message bond dimensions. Increasing the message bond dimension improves both DM and RTM message propagation, while RTM achieves smaller amplitude error at the same bond dimension.}
+    \label{fig:treeFiniteAmplitude}
 \end{figure}
 
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_Infinite_Observable.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Local magnetization dynamics on an infinite Cayley tree with coordination \(z=3\). The plotted observable is \(X(t)\) for several longitudinal fields \(h_z\), with transverse field \(h_x=-2.0\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\). The message-passing results are compared against a simple-update benchmark with bond dimension \(\chi=64\). Increasing the message bond dimension improves both DM and TM schemes, with TM giving more stable long-time behavior in the shown cases.}
+    \label{fig:treeInfiniteObservable}
 \end{figure}
 
 
@@ -407,8 +407,8 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_Infinite_Observable_Diff.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Error of DM and TM message propagation for the infinite \(z=3\) Cayley-tree observable in Fig.~\ref{fig:treeInfiniteObservable}. Errors are measured relative to the simple-update \(\chi=64\) benchmark for different message bond dimensions and longitudinal fields \(h_z\). The TM method generally reduces the error in the contraction-relevant observable, especially at larger message bond dimensions.}
+    \label{fig:treeInfiniteObservableError}
 \end{figure}
 
 
@@ -416,16 +416,16 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{2D_Infinite_Observable.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Message propagation for an infinite two-dimensional square-lattice transverse-field Ising model. The system is initialized in \(\ket{\mathbf 0}\), with \(h_z=0\) and transverse field \(h_x=h_c=-3.04\). The observable is the local magnetization \(X(t)\). Fit-compressed influence-functional belief propagation with \(\chi=16\) is used as the benchmark. At low message bond dimension, both DM and TM message compression eventually deviate from the benchmark, showing that cluster or higher-accuracy environment treatments are still needed in this two-dimensional setting.}
+    \label{fig:2dInfiniteObservable}
 \end{figure}
 
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{2D_Infinite_Observable_Hc.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Two-dimensional square-lattice observable dynamics at the critical transverse field. The model has \(h_z=0\), \(h_x=h_c=-3.04\), and initial state \(\ket{+}\). The plotted \(X(t)\) compares DM and TM message compression at \(\chi=4\) and \(\chi=8\) against a fit-compressed influence-functional belief-propagation benchmark with \(\chi=16\). TM converges toward the benchmark more efficiently than DM at the same message bond dimension, although further cluster corrections are still needed for systematic two-dimensional accuracy.}
+    \label{fig:2dInfiniteObservableHc}
 \end{figure}
 
 
@@ -447,23 +447,23 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Inifnite_Observable_Supp.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Supplementary comparison for infinite-chain transverse contraction of the one-dimensional transverse-field Ising model with \(J=1\), \(h_x=-1.5\), \(h_z=0\), and initial state \(\ket{+}\). The plotted local magnetization is compared against simple-update/TEBD benchmarks and several transverse message-compression schemes. TM compression remains close to the benchmark over a longer time window than the corresponding DM compression at the tested bond dimensions.}
+    \label{fig:1dInfiniteObservableSupp}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_z4_Observable.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Local observable dynamics on an infinite Cayley tree with coordination \(z=4\). The model is a transverse-field Ising system with \(h_x=-3.04438\), Trotter step \(dt=0.04\), and initial state \(\ket{+}\). The plotted \(X(t)\) compares belief-propagation and simple-update based references with DM, TM, fitting, and environment-fitted message compression at several message bond dimensions. The environment-dependent schemes remain stable to longer times than low-bond-dimension open-message propagation.}
+    \label{fig:treeZ4Observable}
 \end{figure}
 
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_Finite_Observable_Compare.png}
-    \caption{Enter Caption}
-    \label{fig:placeholder}
+    \caption{Operator dependence test for finite-chain temporal message compression. The model is a length-\(N=18\) one-dimensional transverse-field Ising chain with \(h_x=-1.5\), \(J=1\), initial state \(\ket{+}\), and temporal bond dimension \(\chi=8\). TM belief propagation gives similar \(X(t)\) results when the environment message is constructed using different local operators, while DM belief propagation deviates more strongly from the TEBD benchmark. This suggests that the RTM/TM message captures environment information that is not tied to a single specific operator insertion.}
+    \label{fig:1dFiniteObservableCompare}
 \end{figure}
 
 
