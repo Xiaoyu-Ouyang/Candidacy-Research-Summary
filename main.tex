@@ -74,39 +74,98 @@
 \setcounter{page}{1}
 
 \section{Background}
+\subsection{Overview of equilibrium and non-equilibrium many-body physics}
 Since the formulation of quantum mechanics, understanding the quantum many-body physics, namely the emergent collective behavior arising from many interacting quantum particles, has become one of the central problems in physics, chemistry and material science. 
-This problem becomes interesting, because the principle behind the quantum many-body system is simply the Schrodinger equation (plus the particle symmetry or Pauli exclusion principle?) $H \ket{\Psi(t)}=i \partial_t \ket{\Psi(t)}$, while the many-body wavefunction $\ket{\Psi}$ is in general of exponential complexity to the particle number $N$, thus impossible to precisely represent the state in classical computers for relatively large $N$ around 10 to 20.
+The microscopic principle behind the quantum many-body system is simply the Schrodinger equation $H \ket{\Psi(t)}=i \hbar \partial_t \ket{\Psi(t)}$ with the physical Hilbert space restricted by particle-exchange symmetry. 
+But rich collective behaviors, such as superconductivity \cite{bardeenTheorySuperconductivity1957}, quantum phase transition \cite{sachdevQuantumPhaseTransitions2011a}, topological order \cite{wenTopologicalOrdersRigid1990} under equilibrium, or thermalization \cite{srednickiChaosQuantumThermalization1994a}, many-body localization \cite{nandkishoreManyBodyLocalizationThermalization2015a} under non-equilibrium, could emerge from the many-body Hamiltonian, making the many-body physics interesting and mysterious. 
+Beyond the intrinsic interest, practical applications, such as predicting molecular energies \cite{kohnSelfConsistentEquationsIncluding1965}, materials properties \cite{hohenbergInhomogeneousElectronGas1964} under equilibrium, and describing spectra \cite{rungeDensityFunctionalTheoryTimeDependent1984}, transport properties \cite{meirLandauerFormulaCurrent1992}, relaxation dynamics under non-equilibrium, could hugely benefit from accurately solving quantum many-body problems.
 
-In different settings, people will have different interest of the system. 
-One major problem to solve is the ground state problem $H\ket{\Psi}=E\ket{\Psi}$ of the quantum many-body system, in which we only need the ground state energy $E_g$, sometimes also the ground state $\ket{\Psi_g}$. 
-People have developed multiple methods to deal with ground state problem, based on the type of system and the accuracy needed, we have methods like Hartree-Fock, couple cluster (?), DMRG, ... \cite{}
-In lots of systems, the ground state could exhibit the area-law entanglement, so we can use tensor network to efficiently represent it \cite{}. 
-However, in the non-equilibrium setup, we would need to deal with the time evolution of the state $\ket{\Psi(t)}$, this state typically exhibit an exponential blowup of complexity, due to the dynamical growth of the entanglement entropy \cite{}. 
-This poses a fundamental challenge.
+However the exponential growth of the many-body Hilbert space leads to computational difficulties. 
+For a system of $N$ local degrees of freedom with local dimension $d$, a generic state requires $d^N$ complex amplitudes to represent exactly, hence exact classical representation rapidly become infeasible as $N$ increases.
 
-On the current method deal with this problem: 
-https://tensornetwork.org/mps/algorithms/timeevo/
-(We should note the scaling with system size, time, accuracy and suitable systems)
+Different physical questions require different levels of information about the many-body state.  
+One central task to solve is the ground state problem $H\ket{\Psi}=E\ket{\Psi}$ of the quantum many-body system, where the primary goal is often to
+obtain the ground-state energy, selected expectation values, and, when needed, a compact representation of the ground-state wavefunction itself.
+A broad range of classical methods have been developed for this purpose, including mean-field approaches such as Hartree-Fock \cite{roothaanNewDevelopmentsMolecular1951}, systematically
+improvable wavefunction methods such as coupled cluster \cite{bartlettCoupledclusterTheoryQuantum2007}, and
+variational tensor-network methods such as density-matrix
+renormalization group (DMRG) \cite{whiteDensityMatrixFormulation1992b}.
+These methods succeed by exploiting
+additional structure of physically relevant states, rather than by
+representing an arbitrary vector in the full Hilbert space.
 
-TEBD:
+Tensor networks provide one particularly important example of this
+principle. 
+In many low-energy systems with local interactions, ground
+states obey an area law for entanglement entropy \cite{eisertColloquiumAreaLaws2010}, allowing them to be efficiently approximated by matrix product states or more general tensor-network ansatzes. 
+This observation leads to the success of DMRG in one-dimensional systems and motivates tensor-network approaches to larger classes of many-body problems.
 
-MPO time evolution 
+However, the situation is more difficult for nonequilibrium real-time dynamics. In this setting, the goal is often to predict time-dependent observables, response functions, spectra, transport properties, or relaxation processes rather than only equilibrium energies. Different numerical approaches can be viewed as choosing different dynamical objects to propagate: a state vector, a correlation function, a density, a reduced density matrix, or an operator. Exact diagonalization, Krylov methods, and Chebyshev expansions \cite{AnalysisKrylovSubspace, hochbruckKrylovSubspaceApproximations1997, tal-ezerAccurateEfficientScheme1984} compute the action of the time-evolution operator on a state without explicitly forming \(e^{-iHt}\), but they still operate in the full Hilbert space and are therefore limited to relatively small systems.
 
-MPS local methods: local Krylov and TDVP
+Other methods avoid propagating the full wavefunction by targeting reduced objects directly. Linear-response and Green's-function approaches \cite{fetterQuantumTheoryManyparticle2003} formulate spectra and transport in terms of correlation functions rather than the full trajectory \(\ket{\Psi(t)}\), but their practical accuracy depends on approximations to response kernels, self-energies, and vertex corrections. Time-dependent density-functional theory (TDDFT) \cite{rungeDensityFunctionalTheoryTimeDependent1984} replaces the many-body wavefunction by the time-dependent density, greatly reducing the complexity but introducing exchange-correlation functionals whose accuracy is highly system and regime dependent. 
 
-Global Krlyov
+Sparse Pauli dynamics and related Pauli-propagation methods \cite{rallSimulationQubitQuantum2019, begusicFastConvergedClassical2024a, begusicRealTimeOperatorEvolution2025, rudolphPauliPropagationComputational2025} take another Heisenberg-picture route: the observable is expanded as \(O(t)=\sum_P a_P(t)P\) in the Pauli-string basis, and the dynamics is approximated by retaining only the important Pauli strings. This avoids state evolution when the relevant operator remains sparse or approximately compressible in the Pauli basis, but the cost can still grow rapidly through Pauli-string proliferation and possible backflow from discarded strings.
 
-And more on the references: 
-[20]-[30] in https://journals.aps.org/prl/pdf/10.1103/PhysRevLett.132.100402
+A related but conceptually distinct reduction is to separate the degrees of freedom into a subsystem of interest and an environment \cite{breuerTheoryOpenQuantum2002, nakajimaQuantumTheoryTransport1958a, zwanzigEnsembleMethodTheory1960}. In this reduced-dynamics viewpoint, the target object is not the full state \(\rho_{SE}(t)\), but the reduced density matrix \(\rho_S(t)=\mathrm{Tr}_E \rho_{SE}(t)\) or observables supported on \(S\). Markovian master equations and Lindblad dynamics \cite{goriniCompletelyPositiveDynamical1976, lindbladGeneratorsQuantumDynamical1976a} approximate the environmental influence as memoryless dissipation, leading to closed equations for \(\rho_S(t)\). More general approaches, such as hierarchical equations of motion (HEOM) \cite{tanimuraTimeEvolutionQuantum1989, tanimuraNumericallyExactApproach2020} and influence-functional path integrals \cite{feynmanTheoryGeneralQuantum1963, makriNumericalPathIntegral1995}, retain non-Markovian memory through auxiliary density matrices or temporal kernels. These methods can be highly accurate when the system-environment split and bath model are appropriate, but their cost often grows rapidly with bath memory time, coupling strength, or the number of subsystem degrees of freedom. Thus, reduced-dynamics methods trade the exponential complexity of the full wavefunction for the problem of accurately and compactly representing the environment's influence.
+
+\subsection{Current tensor network methods for quantum dynamics}
+Tensor network time-evolution methods provide another route by compressing the state, operator, or path-integral object leveraging entanglement or correlation structure of the system \cite{orusPracticalIntroductionTensor2014a, paeckelTimeevolutionMethodsMatrixproduct2019}. 
+In one-dimensional systems, methods such as TEBD, time-dependent DMRG, TDVP, Krylov-based MPS evolution, and MPO-based time evolution \cite{vidalEfficientSimulationOneDimensional2004a, whiteRealTimeEvolutionUsing2004, daleyTimedependentDensitymatrixRenormalizationgroup2004, haegemanUnifyingTimeEvolution2016, zaletelTimeevolvingMatrixProduct2015} can be very effective at short and intermediate times.
+In higher-dimensional systems, projected entangled-pair states and infinite PEPS extend the tensor-network approach beyond one dimension \cite{verstraeteCriticalityAreaLaw2006, jordanClassicalSimulationInfiniteSize2008, jiangAccurateDeterminationTensor2008a, pizornTimeEvolutionProjected2011, phienInfiniteProjectedEntangled2015, hubigTimedependentStudyDisordered2019}, with real-time evolution implemented through local gates and approximate tensor updates such as simple update, full update, or related environment-based schemes.
+
+The main limitation is that real-time evolution can generate entanglement rapidly \cite{calabreseEvolutionEntanglementEntropy2005}. 
+After a quench or under generic continuous real-time evolution, the entanglement entropy of \(\ket{\Psi(t)}\) often grows with time.
+In one-dimensional MPS methods, this growth translates into an increasing bond dimension, which may grow exponentially with time for an accurate representation of the full state.
+In higher dimensions, the difficulty is compounded by the cost of approximately contracting the tensor-network environment during the update.
+As a result, methods that are highly effective for ground states can become inefficient or uncontrolled for long-time dynamics.
+This motivates a more targeted question: when the desired output is not the full wavefunction but a local observable, amplitude, or response function, can one avoid representing the entire time-evolved state and instead compress only the information relevant to the final contraction?
+
+After a quench or under continuous time evolution, the entanglement
+entropy of $\ket{\Psi(t)}$ can grow rapidly, so the bond dimension
+required for an accurate tensor-network representation of the full
+state may grow exponentially with time \cite{orusPracticalIntroductionTensor2014a}. As a result, methods that are
+highly effective for ground states can become inefficient for long-time
+dynamics. This motivates a different question: when the desired output
+is not the full wavefunction but a local observable, amplitude, or
+response function, can one avoid representing the entire time-evolved
+state and instead compress only the information relevant to the final
+contraction?
+
+We can now give a brief summary of several recent notable tensor network methods trying to deal with the time evolution problem in better approaches, especially by focusing on the local description of the state to circumvent the exponential complexity that originated from nonlocal correlations. 
+
+Several recent tensor-network approaches can be understood as changing the object that is compressed, rather than trying to accurately represent the full time-evolved wavefunction. One direction keeps a state-based MPS description but interprets it as an effective description of local thermalizing dynamics, rather than as an accurate microscopic wavefunction. Leviatan et al. \cite{leviatanQuantumThermalizationDynamics} showed that fixed-bond-dimension TDVP can accurately capture local thermalization, diffusion, and transport in thermalizing closed systems, even after the exact wavefunction has developed volume-law entanglement, because long-time local observables are governed by emergent hydrodynamics rather than detailed nonlocal entanglement. Hallam et al. \cite{hallamLyapunovSpectraQuantum2019} further analyzed this TDVP-projected dynamics through its Lyapunov spectrum, interpreting the projected tensor-network dynamics as an effective classical chaotic system. This approach is most natural for thermalizing systems and local hydrodynamic observables, and is less controlled when coherent nonlocal information remains important.
+
+A related state-based strategy is to change the basis in which the MPS is written. Krumnow et al. \cite{krumnowOvercomingEntanglementBarrier2019} enlarged the MPS ansatz by dynamically rotating fermionic modes, arguing that part of the apparent entanglement barrier comes from using a fixed real-space basis. Pastori et al. \cite{pastoriDisentanglingSourcesQuantum2019} supported this viewpoint by showing that quench-generated entanglement can contain a large basis-dependent single-particle component. Rams and Zwolak \cite{ramsBreakingEntanglementBarrier2020} applied a related idea to quantum transport, where a mixed energy/spatial basis localizes the relevant correlations near the bias window and allows current dynamics to be simulated to much longer times. These methods suggest that some entanglement growth reflects a poor choice of basis rather than irreducible many-body complexity, although the optimal basis is problem dependent and the transformed Hamiltonian or MPO can become more complicated.
+
+Another class replaces pure-state evolution by mixed-state or local-density-matrix evolution. In density matrix truncation, White et al. \cite{whiteQuantumDynamicsThermalizing2018} evolved a matrix product density operator and truncated it while preserving the trace and local operator expectation values, so conserved densities and hydrodynamic behavior are not destroyed by compression. 
+Surace et al. \cite{suraceSimulatingOutofequilibriumDynamics2019} formulated a related local-indistinguishability principle, showing that in free-fermion quenches an entangled pure state can be replaced by a mixed state with the same short-range reduced density matrices while retaining robust equilibration values of local observables. 
+Frías-Pérez et al. \cite{frias-perezConvertingLongRangeEntanglement2024a} developed this idea into an explicit tensor-network algorithm that identifies long-range entanglement carried by fast degrees of freedom and converts it into mixture, producing a bounded-bond MPO description for local equilibration. 
+Klein Kvorning et al. \cite{kleinkvorningTimeevolutionLocalInformation2022} further developed a related local-information viewpoint using an information lattice, evolving finite sets of local density matrices while modeling the flow of information to larger length scales. These approaches trade long-range entanglement for mixture or local information, but their accuracy depends on whether discarded long-range correlations or information currents feed back into later local observables.
+
+One can also avoid state evolution entirely by working in the Heisenberg picture. In dissipation-assisted operator evolution, Rakovszky et al. \cite{rakovszkyDissipationassistedOperatorEvolution2022a} evolved local conserved-density operators as MPOs and added artificial dissipation that suppresses long Pauli strings responsible for operator entanglement growth. Transport coefficients are then estimated by extrapolating the artificial dissipation to zero. This method is well matched to high-temperature hydrodynamic transport, but relies on weak backflow from discarded long operators into the slow local conserved-density subspace.
+
+\subsection{Spacetime tensor network contraction}
+For the target observable, one can also work directly with the spacetime tensor network. 
+Starting in \cite{banulsMatrixProductStates2009b}, the two-dimensional network for \(\langle \Psi(t)|O|\Psi(t)\rangle\) is contracted along the spatial direction after folding the ket and bra time evolutions, so the compressed object is a temporal boundary MPS rather than the evolved state itself. 
+This idea was refined by Frías-Pérez and Bañuls \cite{frias-perezLightConeTensor2022}, who used the exact light-cone structure of the local observable to remove canceling gates outside the causal cone and contract only the minimal spacetime network. 
+These spacetime-contraction methods avoid representing the full time-evolved state, but their cost is still controlled by the entanglement of the transverse temporal environment. 
+This motivates the question central to this summary: can the temporal environment required for a target observable be compressed and propagated efficiently, even when the full wavefunction cannot be?
+
+\subsection{Ensemble projection}
 
 
+\section{Methods and Results}
+
+\subsection{(1+1)D spacetime tensor network contraction}
 
 
+On finite tree and infinite tree
 
+On 2D infinite system
 
+temporal ensemble parts
 
-
-
+\section{Discussion}
 
 
 
