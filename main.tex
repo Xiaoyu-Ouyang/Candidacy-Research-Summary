@@ -133,9 +133,14 @@ This motivates the question central to this summary: can the temporal environmen
 
 \section{Methods and Results}
 
+The discussion above reduces the long-time dynamics problem to a more concrete numerical task: how to propagate and compress the temporal environments that appear in spacetime tensor-network contraction.
+In one-dimensional transverse contraction, moving the spatial cut by one site amounts to applying a temporal MPO \(E_i\) to a temporal boundary MPS.
+In tree and higher-dimensional message-passing contractions, the same structure appears when a local temporal tensor is combined with incoming temporal messages to produce an outgoing one.
+Thus, the basic computational primitive throughout this work is MPO-MPS compression: repeatedly applying an MPO-like object to an MPS-like temporal message, then truncating the result without losing the information needed for the final contraction.
+
 \subsection{MPO+MPS compression methods}
 
-When applying an MPO \(W\) to an MPS \(\ket{\psi}\), the exact product \(W\ket{\psi}\) is again an MPS, but its bond dimension is enlarged from \(\chi_{\mathrm{in}}\) to roughly \(D\chi_{\mathrm{in}}\), $D$ the bond dimension of the MPO.
+When applying an MPO \(W\) to an MPS \(\ket{\psi}\), the exact product \(W\ket{\psi}\) is again an MPS, but its bond dimension is enlarged from \(\chi_{\mathrm{in}}\) to roughly \(D\chi_{\mathrm{in}}\), where \(D\) is the bond dimension of the MPO.
 The purpose of MPO-MPS compression is therefore to construct a lower-bond-dimension approximation \(\ket{\eta}\approx W\ket{\psi}\), with bond dimension at most \(\chi\), while retaining the information relevant to later contractions or observables. 
 Different compression algorithms differ mainly in whether they first form the enlarged product explicitly, whether they optimize the output MPS variationally, and whether the truncation uses local or global information about the tensor-network environment.
 
