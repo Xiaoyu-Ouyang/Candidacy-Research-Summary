@@ -390,7 +390,7 @@ Starting from an initial temporal MPS, one repeatedly applies the temporal MPO o
 \langle L^{(n+1)}|\simeq \mathcal C\!\left[\langle L^{(n)}|E\right],
 \end{equation}
 until the boundary MPS and the corresponding leading eigenvalue converge.
-The compression \(\mathcal C\) can be chosen as ordinary DM compression or as RTM compression, in which the opposite fixed-point boundary is used as the environment.
+The compression \(\mathcal C\) can be chosen as ordinary RDM compression or as RTM compression, in which the opposite fixed-point boundary is used as the environment.
 The same procedure is applied to the right boundary.
 Thus the finite-chain left-right sweeps are replaced by a fixed-point iteration within one spatial unit cell.
 
@@ -403,7 +403,7 @@ Thus the finite-chain left-right sweeps are replaced by a fixed-point iteration 
 
 Figure~\ref{fig:1dInfiniteAmplitude} tests this infinite-chain fixed-point contraction on the Loschmidt amplitude.
 Because the target is translationally invariant, the contraction is controlled by the dominant eigenvalue of the transverse transfer matrix, which directly gives the free-energy rate \(f(t)\).
-RTM compression gives a more stable estimate of this dominant eigenvalue than DM compression at the same temporal bond dimension, especially at later times where the temporal boundary becomes harder to compress.
+RTM compression gives a more stable estimate of this dominant eigenvalue than RDM compression at the same temporal bond dimension, especially at later times where the temporal boundary becomes harder to compress.
 
 
 \begin{figure}
