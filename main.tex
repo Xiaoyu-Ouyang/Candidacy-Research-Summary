@@ -536,7 +536,19 @@ Across the shown fields and bond dimensions, the converged TM results usually re
 At some isolated time points, however, the TM fixed-point iteration does not converge cleanly, leading to missing or unreliable data.
 This is a current practical limitation of the method: environment-dependent compression improves the quality of the contraction when it converges, but it can also make the nonlinear message fixed-point problem harder to stabilize.
 
+\subsection{2D spacetime tensor network contraction}
 
+We next apply the same message-compression idea to an infinite two-dimensional square lattice.
+At this stage we focus on the translationally invariant infinite lattice with a one-site unit cell.
+The reason is practical: for finite two-dimensional lattices, the MPS-valued belief-propagation messages are not yet converging as robustly as in the tree and infinite-unit-cell settings, so finite-lattice MPS-BP remains an open implementation issue.
+For the infinite square lattice, by contrast, the local BP update can be solved as a unit-cell fixed-point problem, analogous to the infinite tree calculation above.
+
+There is an important conceptual difference from the tree case.
+The square lattice has loops, so ordinary BP is no longer an exact contraction of the full two-dimensional spacetime tensor network.
+The unit-cell BP calculation should instead be interpreted as a Bethe-lattice or Cayley-tree approximation with coordination \(z=4\), where loop correlations of the true square lattice are neglected.
+Thus the observable computed from the BP messages contains a systematic BP error in addition to the message-compression error.
+Removing this loop error requires corrections beyond single-site BP, such as cluster expansions of the influence-functional BP equations \cite{parkSimulatingQuantumDynamics2025}.
+Within this approximate BP setting, however, we can still compare different ways of compressing the temporal MPS messages.
 
 \begin{figure}
     \centering
@@ -545,6 +557,10 @@ This is a current practical limitation of the method: environment-dependent comp
     \label{fig:2dInfiniteObservable}
 \end{figure}
 
+Figure~\ref{fig:2dInfiniteObservable} compares DM and TM message compression for the infinite square-lattice transverse-field Ising model.
+Both methods eventually deviate from the fit-compressed IF-BP reference, but the TM curve stays close to the reference for a longer time.
+This indicates that even in the loopy two-dimensional BP approximation, choosing the message subspace with an environment-dependent criterion improves the useful time window of the calculation.
+The remaining discrepancy should not be interpreted solely as a compression failure, because the single-site BP approximation itself is missing square-lattice loop effects.
 
 \begin{figure}
     \centering
@@ -553,11 +569,10 @@ This is a current practical limitation of the method: environment-dependent comp
     \label{fig:2dInfiniteObservableHc}
 \end{figure}
 
-
-
-
-
-\subsection{2D spacetime tensor network contraction}
+We further test the method at the critical transverse field \(h_x=h_c=-3.04\), shown in Fig.~\ref{fig:2dInfiniteObservableHc}.
+Here the fit-compressed IF-BP calculation with \(\chi=16\) is again used as the reference within the same single-site BP approximation.
+The TM-compressed messages approach this reference more efficiently than the DM-compressed messages at the same bond dimensions, suggesting that the advantage of RTM-style compression persists in the more challenging critical regime.
+Appendix Fig.~\ref{fig:treeZ4Observable} gives a cleaner comparison on the corresponding \(z=4\) infinite tree, where the BP contraction itself is exact and the remaining error is primarily message compression rather than loop physics.
 
 \subsection{Heisenberg evolution under temporal ensemble}
 
