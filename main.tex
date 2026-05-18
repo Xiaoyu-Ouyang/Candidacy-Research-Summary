@@ -460,7 +460,15 @@ where \(\partial i\) denotes the neighbors of \(i\).
 This is the direct tree analogue of compressing each temporal boundary independently.
 
 RTM message propagation uses the same local contraction but changes the compression criterion.
-To update \(m_{i\to j}\), one first forms the uncompressed candidate message from \(T_i\) and the incoming messages on the other branches, but the truncation basis is selected using the opposite message \(m_{j\to i}\) as an environment.
+We denote this environment-dependent update schematically as
+\begin{equation}
+m_{i\to j}\simeq
+\mathcal C_{\mathrm{RTM}}\!\left[
+T_i\prod_{k\in \partial i\setminus j}m_{k\to i};
+m_{j\to i}
+\right],
+\end{equation}
+where the argument before the semicolon is the uncompressed candidate message, while the argument after the semicolon is the environment used to choose the truncation basis.
 Equivalently, the compression is chosen to preserve the mixed contraction across the edge \((i,j)\), rather than the standalone norm of \(m_{i\to j}\).
 Because this environment message is needed before the RTM update can be defined, we first initialize all directed messages by RDM compression.
 On a finite rooted tree, this is done by a leaf-to-root pass followed by a root-to-leaf pass, so every directed edge has an initial temporal MPS message.
