@@ -524,13 +524,6 @@ The improvement is again not as dramatic as in the one-dimensional chain, but th
 
 
 
-\begin{figure}
-    \centering
-    \includegraphics[width=1\linewidth]{Tree_Infinite_Observable_Diff.png}
-    \caption{Error of DM and TM message propagation for the infinite \(z=3\) Cayley-tree observable in Fig.~\ref{fig:treeInfiniteObservable}. Errors are measured relative to the simple-update \(\chi=64\) benchmark for different message bond dimensions $\chi$ and longitudinal fields \(h_z\). The TM method generally reduces the error in the contraction-relevant observable, especially at larger message bond dimensions.}
-    \label{fig:treeInfiniteObservableError}
-\end{figure}
-
 The error plot in Fig.~\ref{fig:treeInfiniteObservableError} makes this comparison more systematic.
 Across the shown fields and bond dimensions, the converged TM results usually remain closer to the simple-update benchmark than the corresponding RDM results.
 At some isolated time points, however, the TM fixed-point iteration does not converge cleanly, leading to missing or unreliable data.
@@ -605,6 +598,20 @@ More systematic diagnostics are also needed, including deviation time versus bon
 Overall, the results support treating quantum-dynamical BP messages as contraction-dependent objects rather than standalone states.
 Environment-dependent compression aligns the numerical representation with the target observable, and provides a practical route toward longer-time simulations of local quantum dynamics.
 
+% --- References (excluded from page count) -------------------------------
+\begin{singlespace}
+\printbibliography
+\end{singlespace}
+
+\clearpage
+\section*{Supplementary Figures}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1\linewidth]{Tree_Infinite_Observable_Diff.png}
+    \caption{Error of DM and TM message propagation for the infinite \(z=3\) Cayley-tree observable in Fig.~\ref{fig:treeInfiniteObservable}. Errors are measured relative to the simple-update \(\chi=64\) benchmark for different message bond dimensions $\chi$ and longitudinal fields \(h_z\). The TM method generally reduces the error in the contraction-relevant observable, especially at larger message bond dimensions.}
+    \label{fig:treeInfiniteObservableError}
+\end{figure}
 
 \begin{figure}
     \centering
@@ -620,18 +627,11 @@ Environment-dependent compression aligns the numerical representation with the t
     \label{fig:treeZ4Observable}
 \end{figure}
 
-
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_Finite_Observable_Compare.png}
     \caption{Operator dependence test for finite-chain temporal message compression. The model is a length-\(N=18\) one-dimensional transverse-field Ising chain with \(h_x=-1.5\), \(J=1\), initial state \(\ket{+}\), and temporal bond dimension \(\chi=8\). TM belief propagation gives similar \(X(t)\) results when the environment message is constructed using different local operators, while DM belief propagation deviates more strongly from the TEBD benchmark. This suggests that the RTM/TM message captures environment information that is not tied to a single specific operator insertion.}
     \label{fig:1dFiniteObservableCompare}
 \end{figure}
-
-
-% --- References (excluded from page count) -------------------------------
-\begin{singlespace}
-\printbibliography
-\end{singlespace}
 
 \end{document}
