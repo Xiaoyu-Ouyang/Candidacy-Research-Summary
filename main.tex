@@ -496,23 +496,8 @@ For an infinite tree, the message-passing problem again simplifies to a fixed-po
 We consider the infinite Cayley tree with coordination number \(z=3\), equivalently the Bethe lattice when boundary effects are absent.
 Because the lattice is homogeneous and rotationally symmetric, the three directed messages leaving a site are identical at the fixed point.
 Thus it is sufficient to update one representative temporal MPS message repeatedly, rather than sweep over a finite set of sites.
-For RDM compression, the fixed-point update has the schematic form
-\begin{equation}
-m^{(n+1)}
-\simeq
-\mathcal C_{\mathrm{RDM}}\!\left[
-T\left(m^{(n)}\right)^{z-1}
-\right],
-\end{equation}
-where \(T\) is the local temporal tensor and the \(z-1\) incoming messages represent the other branches attached to the site.
-The TM version uses the same candidate message but chooses the truncation basis with the reverse fixed-point message as its environment,
-\begin{equation}
-m^{(n+1)}
-\simeq
-\mathcal C_{\mathrm{RTM}}\!\left[
-T\left(m^{(n)}\right)^{z-1};m^{(n)}
-\right].
-\end{equation}
+For RDM compression, each update contracts the local temporal tensor with the \(z-1\) incoming branch messages and then compresses the outgoing message independently.
+The TM version forms the same candidate outgoing message, but chooses the truncation basis using the reverse fixed-point message as its environment.
 The iteration is repeated until the message and the local observable computed from the converged messages stop changing.
 This is the tree analogue of the infinite-chain power method: the spatial thermodynamic limit is handled directly through a unit-cell fixed point, while the time direction remains encoded in the temporal MPS bond dimension.
 
