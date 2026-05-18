@@ -339,6 +339,8 @@ O(t)=\langle L|E_O|R\rangle .
 \end{equation}
 In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environments, or influence-functional MPSs, for the local subsystem containing the observable. The local observable itself is treated as a small subsystem tensor \(E_O\), while the rest of the chain is compressed into the two temporal boundary MPSs.
 
+\subsubsection{Finite chains}
+
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_Finite_Amplitude.png}
@@ -382,6 +384,8 @@ RTM compression is well suited to this setting because the truncation of each bo
 Figure~\ref{fig:1dFiniteObservable} shows this effect for the middle-site magnetization of the same finite chain.
 At the same temporal bond dimension, folding already improves the stability of transverse contraction, and the folded RTM result is closer to the TEBD benchmark than either folded RDM compression or the fitting-based compression shown here.
 This provides the first numerical evidence that environment-dependent truncation is advantageous not only for amplitudes, where the target is a simple left-right overlap, but also for local observables, where the central operator makes the relevant contraction explicitly inhomogeneous.
+
+\subsubsection{Infinite chains}
 
 For an infinite translationally invariant chain, the transverse contraction can be simplified further.
 Instead of sweeping across a finite system, one looks for the dominant temporal boundary MPS of the one-site or two-site spatial transfer matrix, following the power-method approach used in transverse tensor-network contractions \cite{Carignano2024TemporalEntropy,carignanoITransversejlLibraryTransverse2025,carignanoOvercomingEntanglementBarrier2025}.
