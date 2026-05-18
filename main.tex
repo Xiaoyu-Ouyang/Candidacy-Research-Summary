@@ -438,12 +438,13 @@ A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the sa
 
 \subsection{Tree spacetime tensor network contraction}
 
-It is useful to reinterpret the tree contractions above as a form of belief propagation.
-Belief propagation is exact on tree graphical models, while on loopy graphs it becomes an approximation whose error comes from ignoring loop correlations \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
-In the tensor-network influence-functional setting, the belief-propagation messages are not scalar probability messages, but temporal MPSs that encode influence functionals along the branches of the graph \cite{parkSimulatingQuantumDynamics2025}.
-Thus, on a tree lattice, there is no additional loop error in the message-passing structure itself.
-Once the Trotterized spacetime network is fixed, the remaining approximation is controlled by how accurately these temporal MPS messages are compressed.
-This is precisely where the distinction between RDM and RTM compression enters: both define approximate MPS messages, but RTM chooses the message subspace with the contraction environment in mind.
+The one-dimensional transverse contraction can be viewed as a special case of message passing: the left and right temporal MPSs are messages sent from the two sides of the chain toward the local amplitude or observable.
+On a tree lattice, this interpretation becomes literal.
+Each branch attached to a site can be summarized by a directed temporal MPS message, and the contraction proceeds by propagating these messages through the tree.
+This is closely related to belief propagation, which is exact on tree graphical models and becomes approximate only when loops are present \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
+In the tensor-network influence-functional setting, the belief-propagation messages are not scalar probability messages, but temporal MPSs encoding influence functionals along the branches of the graph \cite{parkSimulatingQuantumDynamics2025}.
+Therefore, on a tree lattice, the message-passing structure itself introduces no loop error; once the Trotterized spacetime network is fixed, the dominant approximation comes from compressing these temporal MPS messages.
+This is the setting in which RDM and RTM compression can be compared most directly.
 
 \subsubsection{Finite trees}
 
@@ -454,7 +455,7 @@ This is precisely where the distinction between RDM and RTM compression enters: 
     \label{fig:messagePropagation}
 \end{figure}
 
-The transverse-contraction idea can be extended from a one-dimensional chain to a finite tree by replacing left and right temporal boundaries with directed temporal messages.
+Figure~\ref{fig:messagePropagation} illustrates the local update used in the finite-tree calculations.
 After Trotterization, each site of the tree contributes a local temporal tensor or temporal MPO \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\) that summarizes the whole branch attached to \(i\) when the edge \((i,j)\) is cut.
 For an ordinary RDM message update, the outgoing message is obtained by contracting the local tensor with all incoming messages except the one from the target direction,
 \begin{equation}
