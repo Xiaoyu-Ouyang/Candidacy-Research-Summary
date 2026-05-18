@@ -438,6 +438,13 @@ A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the sa
 
 \subsection{Tree spacetime tensor network contraction}
 
+It is useful to reinterpret the tree contractions above as a form of belief propagation.
+Belief propagation is exact on tree graphical models, while on loopy graphs it becomes an approximation whose error comes from ignoring loop correlations \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
+In the tensor-network influence-functional setting, the belief-propagation messages are not scalar probability messages, but temporal MPSs that encode influence functionals along the branches of the graph \cite{parkSimulatingQuantumDynamics2025}.
+Thus, on a tree lattice, there is no additional loop error in the message-passing structure itself.
+Once the Trotterized spacetime network is fixed, the remaining approximation is controlled by how accurately these temporal MPS messages are compressed.
+This is precisely where the distinction between RDM and RTM compression enters: both define approximate MPS messages, but RTM chooses the message subspace with the contraction environment in mind.
+
 \subsubsection{Finite trees}
 
 \begin{figure}
