@@ -86,74 +86,28 @@ Overall, the results support treating quantum-dynamical messages as contraction-
 
 \section{Background}
 \subsection{Overview of equilibrium and non-equilibrium many-body physics}
-Since the formulation of quantum mechanics, understanding the quantum many-body physics, namely the emergent collective behavior arising from many interacting quantum particles, has become one of the central problems in physics, chemistry and material science. 
-The microscopic principle behind the quantum many-body system is simply the Schrodinger equation $H \ket{\Psi(t)}=i \hbar \partial_t \ket{\Psi(t)}$ with the physical Hilbert space restricted by particle-exchange symmetry. 
-But rich collective behaviors, such as superconductivity \cite{bardeenTheorySuperconductivity1957}, quantum phase transition \cite{sachdevQuantumPhaseTransitions2011a}, topological order \cite{wenTopologicalOrdersRigid1990} under equilibrium, or thermalization \cite{srednickiChaosQuantumThermalization1994a}, many-body localization \cite{nandkishoreManyBodyLocalizationThermalization2015a} under non-equilibrium, could emerge from the many-body Hamiltonian, making the many-body physics interesting and mysterious. 
-Beyond the intrinsic interest, practical applications, such as predicting molecular energies \cite{kohnSelfConsistentEquationsIncluding1965}, materials properties \cite{hohenbergInhomogeneousElectronGas1964} under equilibrium, and describing spectra \cite{rungeDensityFunctionalTheoryTimeDependent1984}, transport properties \cite{meirLandauerFormulaCurrent1992}, relaxation dynamics under non-equilibrium, could hugely benefit from accurately solving quantum many-body problems.
+Quantum many-body physics asks how collective phenomena emerge from many interacting quantum degrees of freedom.
+Although the microscopic equation \(H\ket{\Psi(t)}=i\hbar\partial_t\ket{\Psi(t)}\) is compact, a generic state of \(N\) local degrees of freedom with local dimension \(d\) requires \(d^N\) amplitudes, making exact classical representation infeasible.
+For equilibrium problems, many successful methods avoid this worst-case scaling by exploiting physical structure: Hartree-Fock and coupled cluster approximate molecular ground states \cite{roothaanNewDevelopmentsMolecular1951,bartlettCoupledclusterTheoryQuantum2007}, while DMRG and related tensor-network methods exploit entanglement area laws in low-energy local systems \cite{whiteDensityMatrixFormulation1992b,eisertColloquiumAreaLaws2010}.
 
-However the exponential growth of the many-body Hilbert space leads to computational difficulties. 
-For a system of $N$ local degrees of freedom with local dimension $d$, a generic state requires $d^N$ complex amplitudes to represent exactly, hence exact classical representation rapidly become infeasible as $N$ increases.
-
-Different physical questions require different levels of information about the many-body state.  
-One central task to solve is the ground state problem $H\ket{\Psi}=E\ket{\Psi}$ of the quantum many-body system, where the primary goal is often to
-obtain the ground-state energy, selected expectation values, and, when needed, a compact representation of the ground-state wavefunction itself.
-A broad range of classical methods have been developed for this purpose, including mean-field approaches such as Hartree-Fock \cite{roothaanNewDevelopmentsMolecular1951}, systematically
-improvable wavefunction methods such as coupled cluster \cite{bartlettCoupledclusterTheoryQuantum2007}, and
-variational tensor-network methods such as density-matrix
-renormalization group (DMRG) \cite{whiteDensityMatrixFormulation1992b}.
-These methods succeed by exploiting
-additional structure of physically relevant states, rather than by
-representing an arbitrary vector in the full Hilbert space.
-
-Tensor networks provide one particularly important example of this
-principle. 
-In many low-energy systems with local interactions, ground
-states obey an area law for entanglement entropy \cite{eisertColloquiumAreaLaws2010}, allowing them to be efficiently approximated by matrix product states or more general tensor-network ansatzes. 
-This observation leads to the success of DMRG in one-dimensional systems and motivates tensor-network approaches to larger classes of many-body problems.
-
-However, the situation is more difficult for nonequilibrium real-time dynamics. In this setting, the goal is often to predict time-dependent observables, response functions, spectra, transport properties, or relaxation processes rather than only equilibrium energies. Different numerical approaches can be viewed as choosing different dynamical objects to propagate: a state vector, a correlation function, a density, a reduced density matrix, or an operator. Exact diagonalization, Krylov methods, and Chebyshev expansions \cite{AnalysisKrylovSubspace, hochbruckKrylovSubspaceApproximations1997, tal-ezerAccurateEfficientScheme1984} compute the action of the time-evolution operator on a state without explicitly forming \(e^{-iHt}\), but they still operate in the full Hilbert space and are therefore limited to relatively small systems.
-
-Other methods avoid propagating the full wavefunction by targeting reduced objects directly. Linear-response and Green's-function approaches \cite{fetterQuantumTheoryManyparticle2003} formulate spectra and transport in terms of correlation functions rather than the full trajectory \(\ket{\Psi(t)}\), but their practical accuracy depends on approximations to response kernels, self-energies, and vertex corrections. Time-dependent density-functional theory (TDDFT) \cite{rungeDensityFunctionalTheoryTimeDependent1984} replaces the many-body wavefunction by the time-dependent density, greatly reducing the complexity but introducing exchange-correlation functionals whose accuracy is highly system and regime dependent. 
-
-Sparse Pauli dynamics and related Pauli-propagation methods \cite{rallSimulationQubitQuantum2019, begusicFastConvergedClassical2024a, begusicRealTimeOperatorEvolution2025, rudolphPauliPropagationComputational2025} take another Heisenberg-picture route: the observable is expanded as \(O(t)=\sum_P a_P(t)P\) in the Pauli-string basis, and the dynamics is approximated by retaining only the important Pauli strings. This avoids state evolution when the relevant operator remains sparse or approximately compressible in the Pauli basis, but the cost can still grow rapidly through Pauli-string proliferation and possible backflow from discarded strings.
-
-A related but conceptually distinct reduction is to separate the degrees of freedom into a subsystem of interest and an environment \cite{breuerTheoryOpenQuantum2002, nakajimaQuantumTheoryTransport1958a, zwanzigEnsembleMethodTheory1960}. In this reduced-dynamics viewpoint, the target object is not the full state \(\rho_{SE}(t)\), but the reduced density matrix \(\rho_S(t)=\mathrm{Tr}_E \rho_{SE}(t)\) or observables supported on \(S\). Markovian master equations and Lindblad dynamics \cite{goriniCompletelyPositiveDynamical1976, lindbladGeneratorsQuantumDynamical1976a} approximate the environmental influence as memoryless dissipation, leading to closed equations for \(\rho_S(t)\). More general approaches, such as hierarchical equations of motion (HEOM) \cite{tanimuraTimeEvolutionQuantum1989, tanimuraNumericallyExactApproach2020} and influence-functional path integrals \cite{feynmanTheoryGeneralQuantum1963, makriNumericalPathIntegral1995}, retain non-Markovian memory through auxiliary density matrices or temporal kernels. These methods can be highly accurate when the system-environment split and bath model are appropriate, but their cost often grows rapidly with bath memory time, coupling strength, or the number of subsystem degrees of freedom. Thus, reduced-dynamics methods trade the exponential complexity of the full wavefunction for the problem of accurately and compactly representing the environment's influence.
+Nonequilibrium real-time dynamics is harder because the desired quantities are often time-dependent observables, spectra, transport coefficients, or relaxation processes rather than only ground-state energies.
+Exact diagonalization, Krylov methods, and Chebyshev expansions \cite{AnalysisKrylovSubspace, hochbruckKrylovSubspaceApproximations1997, tal-ezerAccurateEfficientScheme1984} apply \(e^{-iHt}\) to a state without forming the exponential, but still operate in the full Hilbert space.
+Other approaches avoid a full wavefunction trajectory by choosing reduced dynamical objects: linear response and Green's functions target correlation functions \cite{fetterQuantumTheoryManyparticle2003}; TDDFT propagates the density with approximate exchange-correlation functionals \cite{rungeDensityFunctionalTheoryTimeDependent1984}; sparse Pauli dynamics evolves selected Heisenberg-picture Pauli strings \cite{rallSimulationQubitQuantum2019,begusicFastConvergedClassical2024a,begusicRealTimeOperatorEvolution2025,rudolphPauliPropagationComputational2025}; and open-system methods propagate reduced density matrices or influence functionals after separating a subsystem from its environment \cite{breuerTheoryOpenQuantum2002,nakajimaQuantumTheoryTransport1958a,zwanzigEnsembleMethodTheory1960,goriniCompletelyPositiveDynamical1976,lindbladGeneratorsQuantumDynamical1976a,tanimuraTimeEvolutionQuantum1989,tanimuraNumericallyExactApproach2020,feynmanTheoryGeneralQuantum1963,makriNumericalPathIntegral1995}.
+These methods show a common strategy: replace the full state by the smallest object that still contains the information needed for the target observable.
 
 \subsection{Current tensor network methods for quantum dynamics}
-Tensor network time-evolution methods provide another route by compressing the state, operator, or path-integral object leveraging entanglement or correlation structure of the system \cite{orusPracticalIntroductionTensor2014a, paeckelTimeevolutionMethodsMatrixproduct2019}. 
-In one-dimensional systems, methods such as TEBD, time-dependent DMRG, TDVP, Krylov-based MPS evolution, and MPO-based time evolution \cite{vidalEfficientSimulationOneDimensional2004a, whiteRealTimeEvolutionUsing2004, daleyTimedependentDensitymatrixRenormalizationgroup2004, haegemanUnifyingTimeEvolution2016, zaletelTimeevolvingMatrixProduct2015} can be very effective at short and intermediate times.
-In higher-dimensional systems, projected entangled-pair states and infinite PEPS extend the tensor-network approach beyond one dimension \cite{verstraeteCriticalityAreaLaw2006, jordanClassicalSimulationInfiniteSize2008, jiangAccurateDeterminationTensor2008a, pizornTimeEvolutionProjected2011, phienInfiniteProjectedEntangled2015, hubigTimedependentStudyDisordered2019}, with real-time evolution implemented through local gates and approximate tensor updates such as simple update, full update, or related environment-based schemes.
+Tensor-network time-evolution methods compress a state, operator, or path-integral object using entanglement and correlation structure \cite{orusPracticalIntroductionTensor2014a,paeckelTimeevolutionMethodsMatrixproduct2019}.
+In one dimension, TEBD, time-dependent DMRG, TDVP, Krylov-based MPS evolution, and MPO-based evolution are often effective at short and intermediate times \cite{vidalEfficientSimulationOneDimensional2004a,whiteRealTimeEvolutionUsing2004,daleyTimedependentDensitymatrixRenormalizationgroup2004,haegemanUnifyingTimeEvolution2016,zaletelTimeevolvingMatrixProduct2015}.
+In higher dimensions, PEPS and infinite PEPS extend the idea but require approximate tensor-environment updates \cite{verstraeteCriticalityAreaLaw2006,jordanClassicalSimulationInfiniteSize2008,jiangAccurateDeterminationTensor2008a,pizornTimeEvolutionProjected2011,phienInfiniteProjectedEntangled2015,hubigTimedependentStudyDisordered2019}.
+The central difficulty is that real-time evolution can generate entanglement rapidly \cite{calabreseEvolutionEntanglementEntropy2005}: an MPS bond dimension sufficient for the full \(\ket{\Psi(t)}\) may grow exponentially with time, and higher-dimensional updates add costly environment contractions.
+This motivates the question studied here: if the target is a local observable, amplitude, or response function, can one avoid representing the full time-evolved state and compress only the information needed for the final contraction?
 
-The main limitation is that real-time evolution can generate entanglement rapidly \cite{calabreseEvolutionEntanglementEntropy2005}. 
-After a quench or under generic continuous real-time evolution, the entanglement entropy of \(\ket{\Psi(t)}\) often grows with time.
-In one-dimensional MPS methods, this growth translates into an increasing bond dimension, which may grow exponentially with time for an accurate representation of the full state.
-In higher dimensions, the difficulty is compounded by the cost of approximately contracting the tensor-network environment during the update.
-As a result, methods that are highly effective for ground states can become inefficient or uncontrolled for long-time dynamics.
-This motivates a more targeted question: when the desired output is not the full wavefunction but a local observable, amplitude, or response function, can one avoid representing the entire time-evolved state and instead compress only the information relevant to the final contraction?
-
-After a quench or under continuous time evolution, the entanglement
-entropy of $\ket{\Psi(t)}$ can grow rapidly, so the bond dimension
-required for an accurate tensor-network representation of the full
-state may grow exponentially with time \cite{orusPracticalIntroductionTensor2014a}. As a result, methods that are
-highly effective for ground states can become inefficient for long-time
-dynamics. This motivates a different question: when the desired output
-is not the full wavefunction but a local observable, amplitude, or
-response function, can one avoid representing the entire time-evolved
-state and instead compress only the information relevant to the final
-contraction?
-
-We can now give a brief summary of several recent notable tensor network methods trying to deal with the time evolution problem in better approaches, especially by focusing on the local description of the state to circumvent the exponential complexity that originated from nonlocal correlations. 
-
-Several recent tensor-network approaches can be understood as changing the object that is compressed, rather than trying to accurately represent the full time-evolved wavefunction. One direction keeps a state-based MPS description but interprets it as an effective description of local thermalizing dynamics, rather than as an accurate microscopic wavefunction. Leviatan et al. \cite{leviatanQuantumThermalizationDynamics} showed that fixed-bond-dimension TDVP can accurately capture local thermalization, diffusion, and transport in thermalizing closed systems, even after the exact wavefunction has developed volume-law entanglement, because long-time local observables are governed by emergent hydrodynamics rather than detailed nonlocal entanglement. Hallam et al. \cite{hallamLyapunovSpectraQuantum2019} further analyzed this TDVP-projected dynamics through its Lyapunov spectrum, interpreting the projected tensor-network dynamics as an effective classical chaotic system. This approach is most natural for thermalizing systems and local hydrodynamic observables, and is less controlled when coherent nonlocal information remains important.
-
-A related state-based strategy is to change the basis in which the MPS is written. Krumnow et al. \cite{krumnowOvercomingEntanglementBarrier2019} enlarged the MPS ansatz by dynamically rotating fermionic modes, arguing that part of the apparent entanglement barrier comes from using a fixed real-space basis. Pastori et al. \cite{pastoriDisentanglingSourcesQuantum2019} supported this viewpoint by showing that quench-generated entanglement can contain a large basis-dependent single-particle component. Rams and Zwolak \cite{ramsBreakingEntanglementBarrier2020} applied a related idea to quantum transport, where a mixed energy/spatial basis localizes the relevant correlations near the bias window and allows current dynamics to be simulated to much longer times. These methods suggest that some entanglement growth reflects a poor choice of basis rather than irreducible many-body complexity, although the optimal basis is problem dependent and the transformed Hamiltonian or MPO can become more complicated.
-
-Another class replaces pure-state evolution by mixed-state or local-density-matrix evolution. In density matrix truncation, White et al. \cite{whiteQuantumDynamicsThermalizing2018} evolved a matrix product density operator and truncated it while preserving the trace and local operator expectation values, so conserved densities and hydrodynamic behavior are not destroyed by compression. 
-Surace et al. \cite{suraceSimulatingOutofequilibriumDynamics2019} formulated a related local-indistinguishability principle, showing that in free-fermion quenches an entangled pure state can be replaced by a mixed state with the same short-range reduced density matrices while retaining robust equilibration values of local observables. 
-Frías-Pérez et al. \cite{frias-perezConvertingLongRangeEntanglement2024a} developed this idea into an explicit tensor-network algorithm that identifies long-range entanglement carried by fast degrees of freedom and converts it into mixture, producing a bounded-bond MPO description for local equilibration. 
-Klein Kvorning et al. \cite{kleinkvorningTimeevolutionLocalInformation2022} further developed a related local-information viewpoint using an information lattice, evolving finite sets of local density matrices while modeling the flow of information to larger length scales. These approaches trade long-range entanglement for mixture or local information, but their accuracy depends on whether discarded long-range correlations or information currents feed back into later local observables.
-
-One can also avoid state evolution entirely by working in the Heisenberg picture. In dissipation-assisted operator evolution, Rakovszky et al. \cite{rakovszkyDissipationassistedOperatorEvolution2022a} evolved local conserved-density operators as MPOs and added artificial dissipation that suppresses long Pauli strings responsible for operator entanglement growth. Transport coefficients are then estimated by extrapolating the artificial dissipation to zero. This method is well matched to high-temperature hydrodynamic transport, but relies on weak backflow from discarded long operators into the slow local conserved-density subspace.
+Recent tensor-network methods address this question in several ways.
+Fixed-bond-dimension TDVP can reproduce hydrodynamic local thermalization even when the microscopic wavefunction is highly entangled \cite{leviatanQuantumThermalizationDynamics,hallamLyapunovSpectraQuantum2019}.
+Adaptive fermionic mode transformations and mixed energy/spatial bases reduce apparent entanglement by choosing a more natural single-particle basis \cite{krumnowOvercomingEntanglementBarrier2019,pastoriDisentanglingSourcesQuantum2019,ramsBreakingEntanglementBarrier2020}.
+Mixed-state and local-density-matrix approaches trade long-range entanglement for mixture or local information while preserving local observables \cite{whiteQuantumDynamicsThermalizing2018,suraceSimulatingOutofequilibriumDynamics2019,frias-perezConvertingLongRangeEntanglement2024a,kleinkvorningTimeevolutionLocalInformation2022}.
+Heisenberg-picture methods such as dissipation-assisted operator evolution instead compress the slow local operator subspace relevant for hydrodynamic transport \cite{rakovszkyDissipationassistedOperatorEvolution2022a}.
+All of these approaches exploit the fact that local dynamical information can be simpler than the full state.
 
 \subsection{Spacetime tensor network contraction}
 For the target observable, one can also work directly with the spacetime tensor network. 
@@ -161,8 +115,6 @@ Starting in \cite{banulsMatrixProductStates2009b}, the two-dimensional network f
 This idea was refined by Frías-Pérez and Bañuls \cite{frias-perezLightConeTensor2022}, who used the exact light-cone structure of the local observable to remove canceling gates outside the causal cone and contract only the minimal spacetime network. 
 These spacetime-contraction methods avoid representing the full time-evolved state, but their cost is still controlled by the entanglement of the transverse temporal environment. 
 This motivates the question central to this summary: can the temporal environment required for a target observable be compressed and propagated efficiently, even when the full wavefunction cannot be?
-
-\subsection{Ensemble projection}
 
 \section{Methods and Results}
 
@@ -172,303 +124,196 @@ When applying an MPO \(W\) to an MPS \(\ket{\psi}\), the exact product \(W\ket{\
 The purpose of MPO-MPS compression is therefore to construct a lower-bond-dimension approximation \(\ket{\eta}\approx W\ket{\psi}\), with bond dimension at most \(\chi\), while retaining the information relevant to later contractions or observables. 
 Different compression algorithms differ mainly in whether they first form the enlarged product explicitly, whether they optimize the output MPS variationally, and whether the truncation uses local or global information about the tensor-network environment.
 
-The most straightforward approach is the direct, or contract-then-compress, method \cite{grayQuimbPythonPackage2018}.
-It first contracts the MPO and MPS site by site to form the exact enlarged MPS representation of \(W\ket{\psi}\), then brings this enlarged MPS into canonical form and performs standard SVD truncations to reduce the bond dimension.
-This method is simple, robust, and works directly with singular values, which can make it numerically precise.
-Its main drawback is cost: because it temporarily constructs the enlarged bond dimension \(D\chi_{\mathrm{in}}\), the scaling is relatively expensive, roughly \(O(nD^3\chi_{\mathrm{in}}^3)\) for fixed physical dimension in the standard estimate.
-It is therefore useful as a reliable baseline or for small bond dimensions, but becomes inefficient when the MPO bond dimension or input MPS bond dimension is large.
+Direct, or contract-then-compress, compression first forms the enlarged MPS \(W\ket{\psi}\), canonicalizes it, and truncates by SVD \cite{grayQuimbPythonPackage2018}.
+It is robust and close to optimal for the formed product, but temporarily carries the enlarged bond dimension \(D\chi_{\mathrm{in}}\), giving a relatively expensive \(O(nD^3\chi_{\mathrm{in}}^3)\)-type scaling.
+Zip-up compression avoids this enlarged intermediate by sweeping across the chain, absorbing MPO tensors into the MPS and truncating immediately \cite{stoudenmireMinimallyEntangledTypical2010a}.
+This is fast, typically \(O(nD\chi_{\mathrm{in}}\chi^2)\) at fixed physical dimension, but the truncations use only partial environments and can be less accurate than more global methods.
 
-The zip-up method was introduced as a faster alternative for MPO-MPS multiplication \cite{stoudenmireMinimallyEntangledTypical2010a}.
-Instead of forming the full enlarged product first, it sweeps from one end of the chain to the other, locally absorbing the MPO tensors into the MPS tensors and immediately truncating the growing bond dimension.
-In this sense, the target is still \(\ket{\eta}\approx W\ket{\psi}\), but the approximation is constructed progressively, before the exact product is ever fully formed.
-Its cost is much lower than direct compression, with a typical fixed-\(d\) scaling comparable to \(O(nD\chi_{\mathrm{in}}\chi^2)\), making it attractive for repeated MPO applications in time evolution.
-The weakness is that each truncation is made using only a partial or pseudo-canonical environment, rather than the full global environment of the final product.
-As a result, zip-up is fast and often sufficiently accurate, but can be noticeably less accurate than more globally informed methods; it is also most natural when a fixed output bond dimension is specified.
-
-Successive randomized compression (SRC) is a more recent single-pass method for the same compressed MPO-MPS product \cite{camanoSuccessiveRandomizedCompression2026b}.
-The idea is to avoid both the enlarged exact product and iterative variational fitting by using randomized low-rank projections to identify the important subspace of the target \(W\ket{\psi}\) successively along the chain.
-Operationally, SRC constructs the output MPS through a sequence of randomized QB decompositions of effective tensor-network unfoldings.
-If \(W\ket{\psi}\) is exactly representable with bond dimension \(\chi\), SRC can recover it with probability one; otherwise, it gives a randomized compressed approximation.
-Its asymptotic cost is comparable to the fastest methods, approximately \(O(ndD\chi_{\mathrm{in}}\chi(\chi_{\mathrm{in}}+\chi+dD))\), or \(O(nD\chi^3)\) in the common simplified regime \(d=O(1)\), \(D\leq \chi\), and \(\chi_{\mathrm{in}}\sim \chi\).
-The advantage is that SRC is one-shot, fast, and often much more accurate than zip-up at similar cost.
-The main limitation is that it is randomized and typically controlled by the chosen output bond dimension, so accuracy should be checked by oversampling or comparison with more accurate compression on smaller cases.
-
-The variational fitting method formulates MPO-MPS compression as an optimization problem \cite{grayQuimbPythonPackage2018}:
+Successive randomized compression (SRC) uses randomized low-rank projections to identify the important subspaces of \(W\ket{\psi}\) in one pass \cite{camanoSuccessiveRandomizedCompression2026b}.
+It avoids both the enlarged exact product and iterative fitting, with a cost comparable to fast single-pass methods, but its accuracy depends on the sampled subspace and should be checked by oversampling or smaller benchmark calculations.
+Variational fitting instead solves
 \begin{equation}
     \min_{\ket{\eta}\in \mathrm{MPS}_{\chi}} \| \ket{\eta}-W\ket{\psi}\|^2 .
 \end{equation}
-Instead of constructing \(W\ket{\psi}\) explicitly, it optimizes the tensors of \(\ket{\eta}\) by sweeping through the chain, in close analogy with one-site or two-site DMRG.
-The target is therefore globally defined, and in principle the method can find a high-quality compressed MPS at relatively low per-sweep cost, again comparable to \(O(nD\chi_{\mathrm{in}}\chi^2)\) up to physical-dimension and local-contraction factors.
-The advantage is flexibility: fitting can use a good initial guess, can optimize sums of tensor networks, and can refine a fast approximate result such as zip-up.
-The drawback is that it is iterative and nonconvex. 
-It may require many sweeps, can converge slowly, and can fail to converge for difficult MPOs, especially long-range or poorly conditioned operators.
- For this reason, fitting is often best used as a refinement step rather than the only compression method.
-
- These methods show a basic tradeoff in MPO-MPS compression: direct compression is reliable but expensive, zip-up is fast but locally informed, SRC is fast and globally randomized, and fitting is variationally flexible but iterative.
- The density-matrix and transfer-matrix based methods discussed next provide a different route, in which the truncation subspace is selected from reduced environments rather than from direct SVDs, randomized projections, or variational sweeps, and we will focus on the use of them during the work of spacetime tensor network contraction.
+It is flexible and can refine a good initial guess, but is iterative, nonconvex, and may converge slowly for difficult MPOs.
+These methods expose the basic tradeoff: direct compression is reliable but expensive, zip-up is fast but locally informed, SRC is fast but randomized, and fitting is flexible but iterative.
+The density-matrix and transition-matrix methods below instead choose truncation bases from reduced environments, which is the form most relevant for spacetime contraction.
 
  \begin{figure}
      \centering
      \includegraphics[width=1\linewidth]{RDM_Compression.png}
-     \caption{RDM compression of MPS $A$ by eigenvalue decomposition}
+     \caption{Density-matrix compression of an MPS \(A\). Reduced density matrices of \(A\otimes A^\dagger\) select the dominant basis used to construct the compressed MPS \(A'\).}
      \label{fig:rdmCompression}
  \end{figure}
 
-The density-matrix compression method \cite{grayQuimbPythonPackage2018, TensorNetwork} selects the truncation subspace from reduced density matrices of the target tensor network.
-In the simplest MPS compression problem shown in Fig.~\ref{fig:rdmCompression}, the target is to approximate a high-bond-dimension MPS \(A\) by a lower-bond-dimension MPS \(A'\). Instead of locally truncating each bond by an SVD of a single tensor, one first forms the squared network \(A\otimes A^\dagger\), then partially traces out degrees of freedom to obtain reduced density matrices for successive bipartitions. 
-Diagonalizing these reduced density matrices gives the dominant basis vectors \(U_i\), and keeping only the eigenvectors with the largest eigenvalues defines the compressed tensors of \(A'\).
-
-Operationally, the algorithm proceeds from one boundary of the chain.
-One first contracts environments \(E_i\) of the squared network \(A\otimes A^\dagger\), then constructs the reduced density matrix for the last exposed site, for example \(\rho_6=\mathrm{Tr}_{1\cdots5}[A\otimes A^\dagger]\).
-After diagonalizing \(\rho_6\), the leading eigenvectors define \(U_6\).
-The algorithm then moves leftward: the already selected \(U_6\) is used to rotate and truncate the basis of the next reduced density matrix, \(\rho'_{56}\), whose leading eigenvectors define \(U_5\).
-Repeating this procedure produces \(U_4,U_3,\ldots\), and finally the first tensor \(A'_1\), yielding a compressed MPS \(A'\) in a canonical gauge.
-The key point is that each local tensor is chosen from the dominant eigenspace of a reduced environment, so the truncation is informed by the norm of the full target network, not only by a single local tensor.
-
-For MPO-MPS multiplication, the same idea is applied to the product \(W\ket{\psi}\).
-Rather than explicitly forming the enlarged MPS with bond dimension \(D\chi_{\mathrm{in}}\) and then compressing it, the density-matrix algorithm builds reduced density matrices of the squared MPO-MPS product \((W\ket{\psi})(W\ket{\psi})^\dagger\).
-The leading eigenvectors of these reduced density matrices define the compressed output MPS \(\ket{\eta}\approx W\ket{\psi}\) with bond dimension \(\chi\).
-
-Density-matrix compression is theoretically close to direct contract-then-compress: both select the dominant Schmidt subspace of the target \(W\ket{\psi}\) for a given output bond dimension.
-The difference is procedural. 
-Direct compression first forms the enlarged product MPS and then truncates it by canonical SVDs, whereas the density-matrix method obtains the same truncation subspaces from reduced density matrices of the doubled network \((W\ket{\psi})(W\ket{\psi})^\dagger\).
-This makes the method accurate and non-iterative, and more globally informed than zip-up or local greedy truncation, while avoiding the convergence issues of variational fitting.
+Density-matrix compression \cite{grayQuimbPythonPackage2018, TensorNetwork} selects the output basis from reduced density matrices of the target network.
+For the MPS problem in Fig.~\ref{fig:rdmCompression}, one forms \(A\otimes A^\dagger\), traces out one side of each bipartition, diagonalizes the resulting reduced density matrix, and keeps the leading eigenvectors.
+For MPO-MPS multiplication, the same construction is applied to \((W\ket{\psi})(W\ket{\psi})^\dagger\), giving a non-iterative, globally informed approximation close to direct contract-then-compress without relying on zip-up's local truncations or fitting's nonlinear sweeps.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{RTM_Compression.png}
-    \caption{RTM compression of MPS $A, B$ by SVD}
+    \caption{RTM compression of MPSs \(A\) and \(B\). The reduced transition matrix of \(A\otimes B\) is truncated by SVD, producing paired bases that preserve the \(A\)-\(B\) contraction.}
     \label{fig:rtmCompression}
 \end{figure}
 
 Reduced-transition-matrix (RTM) compression is closely analogous to density-matrix compression, but the object being preserved is different. 
-In density-matrix compression, one constructs \(A\otimes A^\dagger\) and selects the dominant subspace of a single MPS \(A\), so the truncation is optimized for approximating \(A\) in norm.
-In RTM compression, one instead starts from two MPSs, denoted here by \(A\) and \(B\), and constructs the mixed transition network \(A\otimes B\). 
-The target is not to approximate either \(A\) or \(B\) individually, but to preserve their contraction, or more generally the contraction of a left and right temporal boundary appearing in a spacetime tensor network.
-
-For a bipartition of the temporal chain, the reduced transition matrix is obtained by tracing out the complementary temporal degrees of freedom from the mixed object \(A\otimes B\).
-Schematically, one may write
+Instead of optimizing a single MPS norm through \(A\otimes A^\dagger\), RTM starts from two MPSs \(A\) and \(B\) and compresses the mixed transition network \(A\otimes B\), so the target is their contraction rather than either state separately.
+For a bipartition,
 \begin{equation}
     \rho^{AB}_{i\cdots N}=\mathrm{Tr}_{1\cdots i-1}[A\otimes B]
 \end{equation}
-up to normalization by the full overlap.
-
-Unlike a usual reduced density matrix, \(\rho^{AB}\) is generally non-Hermitian and need not have positive eigenvalues.
-Therefore, the robust truncation is not an eigenvalue decomposition, but an SVD,
+is generally non-Hermitian, so it is truncated by SVD rather than by an eigenvalue decomposition,
 \begin{equation}
     \rho^{AB} \simeq U S V^\dagger 
 \end{equation}
-
-The leading left and right singular vectors define two different truncation bases: \(U\) is absorbed into the tensors of \(A\), while \(V^\dagger\) is absorbed into the tensors of \(B\). 
-Repeating this procedure along the temporal chain produces compressed MPSs \(A'\) and \(B'\) whose bond dimension is reduced, but whose mutual contraction is preserved as accurately as possible.
-
-The algorithm shown in Fig.~\ref{fig:rtmCompression} follows the same sweeping structure as the density-matrix algorithm. 
-One first builds environments of the mixed network \(A\otimes B\).
-At the right boundary, the reduced transition matrix \(\rho_6=\mathrm{Tr}_{1\cdots5}[A\otimes B]\) is decomposed by SVD, giving \(U_6\), \(S_6\), and \(V_6^\dagger\).
-The left singular vectors \(U_6\) define the compressed basis for the \(A\) boundary, while the right singular vectors \(V_6^\dagger\) define the corresponding compressed basis for the \(B\) boundary.
-The procedure then moves leftward, constructing \(\rho'_{56}\), \(\rho'_{456}\), and so on, each time using the previously selected bases and keeping only the dominant singular directions.
-At the end of the sweep, the compressed pair \(A'\) and \(B'\) is obtained.
-
-RTM compression \cite{Carignano2024TemporalEntropy, carignanoITransversejlLibraryTransverse2025, carignanoOvercomingEntanglementBarrier2025} is directly adapted to the quantity computed in transverse tensor-network contraction. 
-Standard RDM compression can be gauge-dependent for non-Hermitian transfer matrices: a gauge transformation can make the individual temporal MPSs appear easier or harder to compress without changing the final network contraction.
-RTM compression avoids this mismatch by selecting the subspace from the mixed left-right transition matrix itself. 
-Thus the retained singular vectors are chosen according to their contribution to the final overlap, rather than according to the individual norms of \(A\) and \(B\).
+The left and right singular vectors define paired truncation bases for \(A\) and \(B\), as shown in Fig.~\ref{fig:rtmCompression}.
+RTM compression \cite{Carignano2024TemporalEntropy, carignanoITransversejlLibraryTransverse2025, carignanoOvercomingEntanglementBarrier2025} is therefore naturally adapted to transverse tensor-network contraction, where the observable is an overlap between left and right temporal boundaries.
+It also avoids the gauge mismatch of separately compressing non-Hermitian temporal MPSs: the retained directions are selected by their contribution to the mixed contraction.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{RTM_and_RDM_error.png}
-    \caption{Overlap error distribution for RTM and RDM compression on 1000 random MPS pairs. Each pair has length \(L=8\) and initial bond dimension \(12\), and is compressed to bond dimension \(6\). The error is measured as \(\left|\langle \psi_1'|\psi_2'\rangle-\langle \psi_1|\psi_2\rangle\right|\). RTM compression preserves the overlap much more accurately than separately compressing the two MPSs by RDM compression.}
+    \caption{Overlap error for 1000 random MPS pairs compressed from bond dimension \(12\) to \(6\). RTM preserves \(\langle \psi_1|\psi_2\rangle\) much more accurately than separate RDM compression.}
     \label{fig:rtmRdmError}
 \end{figure}
 
-To test whether RTM compression preserves the contraction-relevant information better than separate RDM compression, we first benchmarked the two methods on random MPS pairs.
-For each sample, two random high-bond-dimension MPSs \(\ket{\psi_1}\) and \(\ket{\psi_2}\) of length \(L=8\) were generated with initial bond dimension \(12\).
-Both methods were then used to compress the pair to bond dimension \(6\).
-For RDM compression, each MPS was compressed separately according to its own reduced density matrices.
-For RTM compression, the two MPSs were compressed together using the reduced transition matrix constructed from the mixed network \(\ket{\psi_2}\bra{\psi_1}\), so that the truncation basis was selected to preserve the overlap between the two states.
-
-The resulting overlap errors are shown in Fig.~\ref{fig:rtmRdmError}. 
-The RTM-compressed pairs are strongly concentrated near zero error, while the RDM-compressed pairs show a much broader distribution with a long tail.
-RTM compression instead keeps the singular directions that contribute directly to the mixed contraction, leading to substantially smaller overlap error at the same output bond dimension.
+As a first check, Fig.~\ref{fig:rtmRdmError} compares RTM and separate RDM compression on random MPS pairs of length \(L=8\).
+Both states are compressed from bond dimension \(12\) to \(6\), and the error is measured in the final overlap.
+The RTM errors are concentrated near zero, while separate RDM compression produces a broader distribution, confirming that the transition matrix keeps directions relevant to the contraction rather than to the individual MPS norms.
 
 \subsection{1D spacetime tensor network contraction}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_TN_amplitude.png}
-    \caption{Spatial contraction of a one-dimensional spacetime tensor network for the amplitude \(\langle \mathbf n|\psi(t)\rangle\). After Trotterizing the time evolution, each spatial column is interpreted as a temporal MPO \(E_i\). Contracting columns from the left and right produces temporal MPS boundaries \(\langle L_i|\) and \(|R_i\rangle\), and the full amplitude can be evaluated as their overlap across any spatial cut.}
+    \caption{Spatial contraction of a 1D spacetime tensor network for \(\langle \mathbf n|\psi(t)\rangle\). Each column is a temporal MPO \(E_i\), and left/right temporal MPS boundaries give the amplitude by overlap.}
     \label{fig:1dTnAmplitude}
 \end{figure}
 
-For one-dimensional real-time dynamics, the amplitude \(\langle \mathbf n|\psi(t)\rangle\) can be written as a two-dimensional spacetime tensor network. 
-Starting from an initial state \(\ket{\psi_0}\), the time-evolved state is \(\ket{\psi(t)}=U(t)\ket{\psi_0}\). 
-After a Trotter decomposition of \(U(t)\), the tensor network has one direction corresponding to space and the other corresponding to time. 
-Fixing the final computational-basis configuration \(\mathbf n\) at the top boundary turns the network into a scalar contraction for the amplitude \(\langle \mathbf n|U(t)|\psi_0\rangle\).
-
-Instead of contracting this network in the time direction, which corresponds to ordinary Schrödinger-picture MPS time evolution, one can contract it in the spatial direction \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,carignanoOvercomingEntanglementBarrier2025}.
-In this transverse picture, each spatial column of the spacetime network is grouped into a temporal MPO \(E_i\), whose physical indices live along the time direction.
-The partial contraction of all columns to the left of site \(i\) defines a left temporal MPS \(\langle L_i|\), while the partial contraction of all columns to the right defines a right temporal MPS \(|R_i\rangle\).
-Applying one more column updates these temporal boundaries as
+For one-dimensional dynamics, the amplitude \(\langle \mathbf n|\psi(t)\rangle=\langle \mathbf n|U(t)|\psi_0\rangle\) becomes a two-dimensional spacetime tensor network after Trotterizing \(U(t)\).
+Instead of contracting in the time direction, one can contract spatially \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,carignanoOvercomingEntanglementBarrier2025}.
+Each column is grouped into a temporal MPO \(E_i\), and the left/right temporal MPS boundaries obey
 \begin{equation}
 \langle L_{i+1}|=\langle L_i|E_{i+1},
 \qquad
 |R_i\rangle=E_i|R_{i+1}\rangle    
 \end{equation}
-With exact contractions, the amplitude is independent of the spatial cut and can be evaluated as
+With exact contractions, the amplitude is independent of the spatial cut,
 \begin{equation}
     \langle \mathbf n|\psi(t)\rangle=\langle L_i|R_{i+1}\rangle
 \end{equation}
 for any \(i\). 
-In practice, however, each application of a temporal MPO increases the bond dimension of the temporal MPS, so compression is required after each spatial step.
-
-This formulation changes the object being compressed. 
-Standard MPS time evolution attempts to represent the full state \(\ket{\psi(t)}\), whose spatial entanglement can grow rapidly after a quench.
-Transverse contraction instead represents the temporal boundary states \(\langle L_i|\) and \(|R_i\rangle\), whose bond dimension is controlled by temporal correlations in the spacetime network.
-For amplitude calculations, the relevant accuracy criterion is therefore not the norm error of each temporal MPS separately, but the error in their final overlap \(\langle L_i|R_{i+1}\rangle\). 
-This is the reason RTM compression, which selects the truncation basis from the mixed left-right transition matrix, is naturally suited to this contraction problem, as we will show in this report later.
+Compression is needed after each column, but the object being compressed is now a temporal boundary, not the full \(\ket{\psi(t)}\).
+For amplitudes, the relevant error is therefore the final overlap \(\langle L_i|R_{i+1}\rangle\), making RTM compression naturally suited to the contraction.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_TN_observable.png}
-    \caption{Folded spacetime tensor network for a local observable \(O(t)=\langle \psi(t)|\hat O|\psi(t)\rangle\). The forward and backward time-evolution layers are paired into a folded temporal tensor network. Contracting the environment from the left and right gives temporal MPS boundaries \(\langle L|\) and \(|R\rangle\), while the site containing the local observable defines a modified temporal MPO \(E_O\). The expectation value is then obtained as \(\langle L|E_O|R\rangle\).}
+    \caption{Folded spacetime tensor network for \(O(t)=\langle \psi(t)|\hat O|\psi(t)\rangle\). The local operator modifies one temporal MPO \(E_O\), and the observable is \(\langle L|E_O|R\rangle\).}
     \label{fig:1dTnObservable}
 \end{figure}
 
-The same construction applies to local observables. 
-For an operator \(\hat O\) supported on one or a few sites, the expectation value is
+For a local observable, the expectation value is
 \begin{equation}
 O(t)=\langle \psi(t)|\hat O|\psi(t)\rangle=\langle \psi_0|U^\dagger(t)\hat O U(t)|\psi_0\rangle
 \end{equation}
-After Trotterizing both \(U(t)\) and \(U^\dagger(t)\), this becomes a double-layer spacetime tensor network, or equivalently a Keldysh contour, with a forward branch and a backward branch.
-A direct transverse contraction is possible, but it is more efficient to fold the network in the time direction by pairing the forward and backward tensors at the same spatial location \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,Carignano2024TemporalEntropy}. 
-After folding, each spatial column becomes a folded temporal MPO whose local physical dimension contains both the ket and bra time indices.
-For sites away from the support of \(\hat O\), the folded column defines an environment temporal MPO \(E_i\). 
-The column containing the local observable is modified and denoted by \(E_O\). 
-Contracting all columns to the left gives a left temporal MPS \(\langle L|\), while contracting all columns to the right gives a right temporal MPS \(|R\rangle\). The local expectation value can then be written as
+Trotterizing \(U(t)\) and \(U^\dagger(t)\) gives a double-layer spacetime network.
+Folding pairs the forward and backward tensors at the same spatial location \cite{banulsMatrixProductStates2009b,hastingsConnectingEntanglementTime2015,Carignano2024TemporalEntropy}, producing environment temporal MPOs \(E_i\) and a modified observable column \(E_O\).
+The local expectation value is then
 \begin{equation}
 O(t)=\langle L|E_O|R\rangle .
 \end{equation}
-In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environments, or influence-functional MPSs, for the local subsystem containing the observable. The local observable itself is treated as a small subsystem tensor \(E_O\), while the rest of the chain is compressed into the two temporal boundary MPSs.
+Thus \(\langle L|\) and \(|R\rangle\) are influence-functional MPSs for the local subsystem containing the observable.
 
 \subsubsection{Finite chains}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{1D_Finite_Amplitude.png}
-    \caption{Finite-chain Loschmidt amplitude computed by transverse spacetime contraction. The model is a length-\(N=18\) one-dimensional transverse-field Ising chain with longitudinal field \(h_z=0\), transverse field \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the amplitude magnitude \(\left|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle\right|\). The black curve is a TEBD benchmark with bond dimension \(\chi=512\). At the same temporal bond dimensions \(\chi=4\) and \(\chi=8\), RTM-compressed transverse contraction tracks the benchmark more accurately than separate RDM compression of the left and right temporal MPS boundaries.}
+    \caption{Finite-chain Loschmidt amplitude for the 1D TFIM with \(N=18\), \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). RTM tracks the TEBD \(\chi=512\) benchmark more accurately than RDM at low temporal bond dimension.}
     \label{fig:1dFiniteAmplitude}
 \end{figure}
 
-We next incorporate RTM compression into the transverse contraction algorithm.
-For the amplitude calculation in Fig.~\ref{fig:1dFiniteAmplitude}, we first construct an initial set of temporal boundary MPSs using standard density-matrix compression.
-Starting from the left boundary, the columns are applied from left to right,
+For finite chains, we first initialize left and right temporal MPSs using density-matrix compression,
 \begin{equation}
 \langle L_{i+1}^{(0)}|\simeq \mathcal C_{\mathrm{DM}}\!\left[\langle L_i^{(0)}|E_{i+1}\right],
 \end{equation}
-where \(\mathcal C_{\mathrm{DM}}\) denotes compression of the temporal MPS to the chosen bond dimension.
-The same procedure is then performed from right to left to initialize the right temporal MPSs,
+with the analogous right-boundary update
 \begin{equation}
 |R_i^{(0)}\rangle\simeq \mathcal C_{\mathrm{DM}}\!\left[E_i|R_{i+1}^{(0)}\rangle\right].
 \end{equation}
-These two passes give a complete set of approximate left and right temporal environments, but each boundary has been compressed independently according to its own norm.
-
-RTM compression is then used in environment-dependent sweeps.
-In a left-to-right sweep, one updates \(\langle L_{i+1}|\) by applying the temporal MPO \(E_{i+1}\) to \(\langle L_i|\), but chooses the truncation basis using the already initialized right boundary \(|R_{i+1}\rangle\) as the environment.
-Thus the compression is optimized for the overlap \(\langle L_{i+1}|R_{i+1}\rangle\), which is the actual amplitude obtained by cutting the spacetime network at that bond, rather than for the standalone norm of \(\langle L_{i+1}|\).
-After this left-to-right update, a right-to-left sweep updates the right temporal MPSs in the same way, now using the improved left boundaries as environments.
-In practice, one or two such bidirectional sweeps are usually sufficient for convergence.
-This explains the improvement in Fig.~\ref{fig:1dFiniteAmplitude}: at fixed temporal bond dimension, RTM keeps the singular directions that are most relevant to the final left-right contraction, while independent DM compression can spend bond dimension on features of each temporal MPS that have little weight in the final amplitude.
-
-The same idea becomes even more useful for local observables, where the folded tensor network is the natural object to contract.
-Folding pairs the forward and backward real-time contours before transverse compression, so local cancellations between \(U(t)\) and \(U^\dagger(t)\) are kept inside each temporal tensor rather than being spread across two separately compressed layers \cite{hastingsConnectingEntanglementTime2015,Carignano2024TemporalEntropy}.
-This reduces the temporal correlations that the boundary MPS must carry and makes the contraction focus on the influence of the environment on the local observable.
-The observable problem is also less symmetric than the amplitude problem: the temporal MPO \(E_O\) at the measured site breaks the spatial translation symmetry of the otherwise uniform network, so the left and right temporal environments must be adapted to this inhomogeneous central tensor.
-RTM compression is well suited to this setting because the truncation of each boundary is chosen with the opposite boundary and the observable-containing region in mind, rather than by minimizing the standalone compression error of a single temporal MPS.
+where \(\mathcal C_{\mathrm{DM}}\) truncates to the chosen bond dimension.
+RTM then performs environment-dependent sweeps: a left-to-right update compresses \(\langle L_{i+1}|\) using \(|R_{i+1}\rangle\) as the environment, followed by a right-to-left update using the improved left boundaries.
+One or two bidirectional sweeps are usually sufficient, and Fig.~\ref{fig:1dFiniteAmplitude} shows that this preserves the final overlap better than independently compressing each boundary.
+For local observables, folding keeps \(U(t)\) and \(U^\dagger(t)\) cancellations inside each temporal tensor, while the modified \(E_O\) makes the contraction explicitly inhomogeneous.
+RTM is useful here because the boundary is truncated with the opposite boundary and observable region in mind, rather than by its standalone norm.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Finite_Observable.png}
-    \caption{Finite-chain local observable benchmark for the folded spacetime tensor network. The model is the same length-\(N=18\) one-dimensional transverse-field Ising chain used in Fig.~\ref{fig:1dFiniteAmplitude}, with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the middle-site magnetization \(Z_{N/2}(t)\). TEBD $\chi=128$ results provide the benchmark, while folded and unfolded transverse contractions are compared using RDM, RTM, and fidelity-fitting based compression. The folded RTM compression (green) gives the most accurate low-bond-dimension result among the tested transverse-contraction schemes.}
+    \caption{Finite-chain middle-site magnetization \(Z_{N/2}(t)\) for the same TFIM as Fig.~\ref{fig:1dFiniteAmplitude}. Folded RTM gives the closest low-bond-dimension transverse-contraction result to the TEBD \(\chi=128\) benchmark.}
     \label{fig:1dFiniteObservable}
 \end{figure}
 
-Figure~\ref{fig:1dFiniteObservable} shows this effect for the middle-site magnetization of the same finite chain.
-At the same temporal bond dimension, folding already improves the stability of transverse contraction, and the folded RTM result is closer to the TEBD benchmark than either folded RDM compression or the fitting-based compression shown here.
-This provides the first numerical evidence that environment-dependent truncation is advantageous not only for amplitudes, where the target is a simple left-right overlap, but also for local observables, where the central operator makes the relevant contraction explicitly inhomogeneous.
+Figure~\ref{fig:1dFiniteObservable} shows that folding improves stability and folded RTM is closer to the TEBD benchmark than folded RDM or fitting-based compression, demonstrating the same contraction-aware advantage for local observables.
 
 \subsubsection{Infinite chains}
 
-For an infinite translationally invariant chain, the transverse contraction can be simplified further.
-Instead of sweeping across a finite system, one looks for the dominant temporal boundary MPS of the one-site or two-site spatial transfer matrix, following the power-method approach used in transverse tensor-network contractions \cite{Carignano2024TemporalEntropy,carignanoITransversejlLibraryTransverse2025,carignanoOvercomingEntanglementBarrier2025}.
-Starting from an initial temporal MPS, one repeatedly applies the temporal MPO of a unit cell and compresses the result,
+For an infinite translationally invariant chain, the finite sweep is replaced by a power method for the dominant temporal boundary MPS of the spatial transfer matrix \cite{Carignano2024TemporalEntropy,carignanoITransversejlLibraryTransverse2025,carignanoOvercomingEntanglementBarrier2025}:
 \begin{equation}
 \langle L^{(n+1)}|\simeq \mathcal C\!\left[\langle L^{(n)}|E\right],
 \end{equation}
-until the boundary MPS and the corresponding leading eigenvalue converge.
-The compression \(\mathcal C\) can be chosen as ordinary RDM compression or as RTM compression, in which the opposite fixed-point boundary is used as the environment.
-The same procedure is applied to the right boundary.
-Thus the finite-chain left-right sweeps are replaced by a fixed-point iteration within one spatial unit cell.
+The compression can be RDM or RTM, with the latter using the opposite fixed-point boundary as the environment.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.6\linewidth]{1D_Infinite_Amplitude.png}
-    \caption{Infinite-chain Loschmidt amplitude per site computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\), the temporal MPS is updated by a power method until convergence. The plotted free-energy rate, \(f(t)=-\log|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle|/N\), is compared with the analytical result. RTM compression (red) remains stable and follows the analytical curve more closely than RDM compression (blue) at the same temporal bond dimensions \(\chi=8\) and \(\chi=16\).}
+    \caption{Infinite-chain Loschmidt free-energy rate for the 1D TFIM with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). RTM follows the analytical result more closely than RDM.}
     \label{fig:1dInfiniteAmplitude}
 \end{figure}
 
-Figure~\ref{fig:1dInfiniteAmplitude} tests this infinite-chain fixed-point contraction on the Loschmidt amplitude.
-Because the target is translationally invariant, the contraction is controlled by the dominant eigenvalue of the transverse transfer matrix, which directly gives the free-energy rate \(f(t)\).
-RTM compression gives a more stable estimate of this dominant eigenvalue than RDM compression at the same temporal bond dimension, especially at later times where the temporal boundary becomes harder to compress.
+Figure~\ref{fig:1dInfiniteAmplitude} shows that RTM gives a more stable dominant transverse eigenvalue, and hence a more accurate Loschmidt free-energy rate, than RDM.
 
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Infinite_Entropy.png}
-    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller, smoother and closer to \(\log(T)\) than the RDM entropy for the tested bond dimensions.}
+    \caption{Temporal entropy diagnostics for the infinite-chain amplitude. The transition-matrix entropy \(S_{LR}\) is smaller and closer to \(\log(T)\) than the single-boundary entropy \(S_{LL}\).}
     \label{fig:1dInfiniteEntropy}
 \end{figure}
 
-The improvement is consistent with the generalized temporal-entropy picture developed in Refs.~\cite{Carignano2024TemporalEntropy,carignanoOvercomingEntanglementBarrier2025}.
-For translationally invariant amplitude tensor networks in the thermodynamic and large-time limits, the relevant transition-matrix entropy \(S_{LR}\) has a real part that saturates or grows at most logarithmically with the evolution time \(T\), with logarithmic growth appearing at dynamical critical points.
-This is the entropy that controls the bond dimension needed by an RTM-style transverse contraction.
-By contrast, the ordinary RDM entropy \(S_{LL}\) measures the compressibility of one temporal MPS in isolation and can grow much faster in finite-time calculations.
-Figure~\ref{fig:1dInfiniteEntropy} shows this distinction directly: the RDM-based entropy can increase sharply and make the boundary appear much harder to compress, while the RTM entropy follows the expected slower \(\log(T)\)-like behavior over the accessible time window.
+This agrees with the temporal-entropy theory of Refs.~\cite{Carignano2024TemporalEntropy,carignanoOvercomingEntanglementBarrier2025}: for translationally invariant amplitude networks, the relevant transition-matrix entropy \(S_{LR}\) saturates or grows at most logarithmically with time.
+Figure~\ref{fig:1dInfiniteEntropy} shows that \(S_{LL}\), which measures one boundary in isolation, can grow much faster and overestimate the cost of the contraction.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{1D_Infinite_Observable.png}
-    \caption{Infinite-chain local observable computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\), the temporal MPS is updated by a power method until convergence. The plotted magnetization \(Z(t)\) is compared against a finite-\(N\) TEBD benchmark. RTM compression (red) with temporal bond dimension \(\chi=8\) tracks the benchmark more closely than RDM compression (blue) over the shown time window.}
+    \caption{Infinite-chain local magnetization \(Z(t)\) for the 1D TFIM with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{+}\). RTM tracks the TEBD benchmark longer than RDM.}
     \label{fig:1dInfiniteObservable}
 \end{figure}
 
-For local observables in an infinite chain, there is no identical translationally invariant amplitude network because the folded temporal MPO \(E_O\) at the measured site creates an inhomogeneous insertion.
-Nevertheless, the same fixed-point environments can be used to contract the left and right sides of the folded observable network, and the observable is then evaluated as \(\langle L|E_O|R\rangle\).
-Figure~\ref{fig:1dInfiniteObservable} shows that RTM compression remains advantageous in this setting even though the logarithmic entropy argument was derived for amplitudes.
-The RTM boundary gives a visibly better approximation to the TEBD benchmark than the corresponding DM boundary, indicating that choosing the truncation according to the final left-observable-right contraction is useful beyond the strictly translationally invariant amplitude problem.
-A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the same qualitative behavior: DM compression eventually drifts away from the benchmark, while TM compression remains accurate for substantially longer times, although at the largest times the fixed-point iteration can occasionally fail to converge cleanly.
+For local observables, \(E_O\) creates an inhomogeneous insertion, but the fixed-point environments still contract the observable as \(\langle L|E_O|R\rangle\).
+Figures~\ref{fig:1dInfiniteObservable} and \ref{fig:1dInfiniteObservableSupp} show that RTM remains advantageous beyond amplitudes, although long-time fixed-point convergence can occasionally fail.
 
 \subsection{Tree spacetime tensor network contraction}
 
-The one-dimensional transverse contraction can be viewed as a special case of message passing: the left and right temporal MPSs are messages sent from the two sides of the chain toward the local amplitude or observable.
-On a tree lattice, this interpretation becomes literal.
-Each branch attached to a site can be summarized by a directed temporal MPS message, and the contraction proceeds by propagating these messages through the tree.
-This is closely related to belief propagation, which is exact on tree graphical models and becomes approximate only when loops are present \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}.
-In the tensor-network influence-functional setting, the belief-propagation messages are not scalar probability messages, but temporal MPSs encoding influence functionals along the branches of the graph \cite{parkSimulatingQuantumDynamics2025}.
-Therefore, on a tree lattice, the message-passing structure itself introduces no loop error; once the Trotterized spacetime network is fixed, the dominant approximation comes from compressing these temporal MPS messages.
-This is the setting in which RDM and RTM compression can be compared most directly.
+The 1D transverse contraction is a special case of message passing: the left and right temporal MPSs are messages sent toward the target contraction.
+On a tree lattice this becomes literal, with each branch summarized by a directed temporal MPS message.
+Belief propagation is exact on trees and approximate only in the presence of loops \cite{yedidiaUnderstandingBeliefPropagation2003,alkabetzTensorNetworksContraction2021}; in the influence-functional setting, the messages are temporal MPSs rather than scalar probabilities \cite{parkSimulatingQuantumDynamics2025}.
+Thus, for a fixed Trotterized tree network, the main approximation is message compression, making trees a clean setting for comparing RDM and RTM.
 
 \subsubsection{Finite trees}
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{Message_Propagation.png}
-    \caption{Environment-dependent message propagation on a finite tree tensor network. In standard density-matrix message compression (left panel), an outgoing message such as \(m_{3\to4}\) is compressed from the local tensor \(T_3\) and incoming messages \(m_{1\to3}\) and \(m_{2\to3}\). In the transition-matrix version (right panel), the compression of \(m_{3\to4}\) also depends on the environment message \(m_{4\to3}\), selecting a truncation subspace adapted to the contraction in which the message will be used.}
+    \caption{Finite-tree message update. RDM compresses \(m_{3\to4}\) from \(T_3\) and incoming messages, while RTM also uses the reverse message \(m_{4\to3}\) as the contraction environment.}
     \label{fig:messagePropagation}
 \end{figure}
 
-Figure~\ref{fig:messagePropagation} illustrates the local update used in the finite-tree calculations.
-After Trotterization, each site of the tree contributes a local temporal tensor or temporal MPO \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\) that summarizes the whole branch attached to \(i\) when the edge \((i,j)\) is cut.
-For an ordinary RDM message update, the outgoing message is obtained by contracting the local tensor with all incoming messages except the one from the target direction,
+Each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\).
+The RDM update contracts the local temporal tensor \(T_i\) with all incoming messages except from the target direction,
 \begin{equation}
 m_{i\to j}\simeq
 \mathcal C_{\mathrm{RDM}}\!\left[
@@ -476,10 +321,7 @@ T_i\prod_{k\in \partial i\setminus j}m_{k\to i}
 \right],
 \end{equation}
 where \(\partial i\) denotes the neighbors of \(i\).
-This is the direct tree analogue of compressing each temporal boundary independently.
-
-RTM message propagation uses the same local contraction but changes the compression criterion.
-We denote this environment-dependent update schematically as
+RTM uses the same candidate message but compresses it with the reverse message as environment,
 \begin{equation}
 m_{i\to j}\simeq
 \mathcal C_{\mathrm{RTM}}\!\left[
@@ -487,96 +329,65 @@ T_i\prod_{k\in \partial i\setminus j}m_{k\to i};
 m_{j\to i}
 \right],
 \end{equation}
-where the argument before the semicolon is the uncompressed candidate message, while the argument after the semicolon is the environment used to choose the truncation basis.
-Equivalently, the compression is chosen to preserve the mixed contraction across the edge \((i,j)\), rather than the standalone norm of \(m_{i\to j}\).
-Because this environment message is needed before the RTM update can be defined, we first initialize all directed messages by RDM compression.
-On a finite rooted tree, this is done by a leaf-to-root pass followed by a root-to-leaf pass, so every directed edge has an initial temporal MPS message.
-We then perform environment-dependent sweeps: a leaf-to-root sweep updates messages toward the root using the current reverse messages as environments, and a root-to-leaf sweep updates the opposite directions using the improved messages.
-Repeating these bidirectional sweeps gives a fixed point of the compressed message-passing equations.
+so the truncation preserves the mixed contraction across edge \((i,j)\).
+In practice, all directed messages are first initialized by RDM leaf-to-root and root-to-leaf passes.
+RTM then alternates leaf-to-root and root-to-leaf sweeps using the current reverse messages as environments until the compressed BP equations converge.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_Finite_Amplitude.png}
-    \caption{Finite-tree Loschmidt amplitude computed by message propagation for a transverse-field Ising Hamiltonian on a binary tree of depth \(4\), with longitudinal field \(h_z=0.6\), transverse field \(h_x=-1.0\), and initial state \(\ket{\mathbf 0}\). (a) Time dependence of \(\left|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle\right|\) for message bond dimensions \(\chi=4,8,12,16\), compared with a TEBD benchmark using \(\chi=256\). (b) Amplitude error at \(t=6.5\) as a function of message bond dimension, showing that RTM message compression gives smaller error than DM compression at the same \(\chi\). (c) Finite binary-tree geometry with depth=4 used in the calculation.}
+    \caption{Finite-tree Loschmidt amplitude on a depth-4 binary TFIM tree with \(h_z=0.6\), \(h_x=-1.0\), and initial state \(\ket{\mathbf 0}\). RTM gives smaller amplitude error than DM, especially at \(t=6.5\).}
     \label{fig:treeFiniteAmplitude}
 \end{figure}
 
-Figure~\ref{fig:treeFiniteAmplitude} tests this procedure on a finite binary-tree lattice.
-The observable is the Loschmidt amplitude, so the final scalar is obtained by contracting the converged temporal messages into the central region of the tree.
-Increasing the message bond dimension improves both RDM and RTM message propagation, as expected.
-At the same \(\chi\), RTM gives a visibly smaller amplitude error than RDM, especially in the error plot at \(t=6.5\), showing that the environment-dependent truncation is still useful beyond one-dimensional chain geometries.
-The improvement is more modest than in the one-dimensional examples: the finite tree has shorter paths from leaves to the center and many branching messages, so the advantage of optimizing a single long left-right temporal boundary is less pronounced.
-Nevertheless, the data support the same basic principle: when the target is a final contraction, the message should be compressed using the environment in which it will be contracted.
+Figure~\ref{fig:treeFiniteAmplitude} tests this finite-tree sweep on a binary-tree Loschmidt amplitude.
+Both methods improve with \(\chi\), but RTM gives smaller error, showing that contraction-aware compression remains useful beyond chains.
+The gain is more modest than in 1D because the tree has shorter paths and many branching messages, but the same principle holds.
 
 
 \subsubsection{Infinite trees}
 
-For an infinite tree, the message-passing problem again simplifies to a fixed-point problem on a small unit cell.
-We consider the infinite Cayley tree with coordination number \(z=3\), equivalently the Bethe lattice when boundary effects are absent.
-Because the lattice is homogeneous and rotationally symmetric, the three directed messages leaving a site are identical at the fixed point.
-Thus it is sufficient to update one representative temporal MPS message repeatedly, rather than sweep over a finite set of sites.
-For RDM compression, each update contracts the local temporal tensor with the \(z-1\) incoming branch messages and then compresses the outgoing message independently.
-The TM version forms the same candidate outgoing message, but chooses the truncation basis using the reverse fixed-point message as its environment.
-The iteration is repeated until the message and the local observable computed from the converged messages stop changing.
-This is the tree analogue of the infinite-chain power method: the spatial thermodynamic limit is handled directly through a unit-cell fixed point, while the time direction remains encoded in the temporal MPS bond dimension.
+For an infinite Cayley tree with coordination \(z=3\), rotational symmetry reduces message propagation to a unit-cell fixed point.
+One repeatedly updates a representative temporal MPS message using the \(z-1\) incoming branches, with either independent RDM compression or TM compression using the reverse fixed-point message as environment.
+This is the tree analogue of the infinite-chain power method.
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{Tree_Infinite_Observable.png}
-    \caption{Local magnetization dynamics on an infinite Cayley tree with coordination \(z=3\). The plotted observable is \(X(t)\) for several longitudinal fields \(h_z\), with transverse field \(h_x=-2.0\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\). The message-passing results are compared against a simple-update benchmark with bond dimension \(\chi=64\). Increasing the message bond dimension improves both DM and TM schemes, with TM giving more stable long-time behavior in the shown cases.}
+    \caption{Local magnetization \(X(t)\) on an infinite \(z=3\) Cayley tree with \(h_x=-2.0\) and initial state \(\ket{+}\). TM stays closer to the simple-update \(\chi=64\) benchmark than DM.}
     \label{fig:treeInfiniteObservable}
 \end{figure}
 
-Figure~\ref{fig:treeInfiniteObservable} applies this infinite-tree fixed-point contraction to local magnetization dynamics.
-The simple-update TEBD calculation with large bond dimension is used as a benchmark.
-For the tested fields, RDM message compression typically starts to show a systematic drift from the benchmark at earlier times.
-TM compression delays this drift, giving a visibly better approximation over a longer time window at the same message bond dimension.
-The improvement is again not as dramatic as in the one-dimensional chain, but the trend is consistent: using the opposite message as an environment selects a truncation subspace that is better aligned with the final local observable contraction.
-
-
-
-The error plot in Fig.~\ref{fig:treeInfiniteObservableError} makes this comparison more systematic.
-Across the shown fields and bond dimensions, the converged TM results usually remain closer to the simple-update benchmark than the corresponding RDM results.
-At some isolated time points, however, the TM fixed-point iteration does not converge cleanly, leading to missing or unreliable data.
-This is a current practical limitation of the method: environment-dependent compression improves the quality of the contraction when it converges, but it can also make the nonlinear message fixed-point problem harder to stabilize.
+Figures~\ref{fig:treeInfiniteObservable} and \ref{fig:treeInfiniteObservableError} show the infinite-tree result.
+RDM typically drifts from the simple-update benchmark earlier, while converged TM remains closer across the shown fields and bond dimensions.
+Some long-time TM fixed points fail to converge cleanly, indicating that environment-dependent compression improves the contraction when stable but can make the nonlinear iteration harder.
 
 \subsection{2D spacetime tensor network contraction}
 
-We next apply the same message-compression idea to an infinite two-dimensional square lattice.
-At this stage we focus on the translationally invariant infinite lattice with a one-site unit cell.
-The reason is practical: for finite two-dimensional lattices, the MPS-valued belief-propagation messages are not yet converging as robustly as in the tree and infinite-unit-cell settings, so finite-lattice MPS-BP remains an open implementation issue.
-For the infinite square lattice, by contrast, the local BP update can be solved as a unit-cell fixed-point problem, analogous to the infinite tree calculation above.
-
-There is an important conceptual difference from the tree case.
-The square lattice has loops, so ordinary BP is no longer an exact contraction of the full two-dimensional spacetime tensor network.
-The unit-cell BP calculation should instead be interpreted as a Bethe-lattice or Cayley-tree approximation with coordination \(z=4\), where loop correlations of the true square lattice are neglected.
-Thus the observable computed from the BP messages contains a systematic BP error in addition to the message-compression error.
-Removing this loop error requires corrections beyond single-site BP, such as cluster expansions of the influence-functional BP equations \cite{parkSimulatingQuantumDynamics2025}.
-Within this approximate BP setting, however, we can still compare different ways of compressing the temporal MPS messages.
+We next test an infinite square lattice with a one-site unit cell.
+Finite 2D MPS-BP updates are not yet robust, while the infinite lattice reduces to a unit-cell fixed point.
+Unlike the tree case, however, square-lattice BP is only an approximation: single-site BP effectively replaces the loopy square lattice by a \(z=4\) Bethe lattice, so the observable contains both message-compression error and loop error.
+Systematic 2D accuracy will require cluster expansions or related loop corrections \cite{parkSimulatingQuantumDynamics2025}, but the unit-cell setting still allows a direct comparison of DM and TM message compression.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{2D_Infinite_Observable.png}
-    \caption{Message propagation for an infinite two-dimensional square-lattice transverse-field Ising model. The system is initialized in \(\ket{\mathbf 0}\), with \(h_z=0\) and transverse field \(h_x=h_c=-3.04\). The observable is the local magnetization \(X(t)\). Fit-compressed influence-functional belief propagation with \(\chi=16\) is used as the benchmark. At low message bond dimension, both DM and TM message compression eventually deviate from the benchmark, showing that cluster or higher-accuracy environment treatments are still needed in this two-dimensional setting.}
+    \caption{Infinite square-lattice TFIM magnetization \(X(t)\) initialized from \(\ket{\mathbf 0}\) at \(h_x=h_c=-3.04\). TM deviates later than DM from the fit-compressed IF-BP \(\chi=16\) reference.}
     \label{fig:2dInfiniteObservable}
 \end{figure}
 
-Figure~\ref{fig:2dInfiniteObservable} compares DM and TM message compression for the infinite square-lattice transverse-field Ising model.
-Both methods eventually deviate from the fit-compressed IF-BP reference, but the TM curve stays close to the reference for a longer time.
-This indicates that even in the loopy two-dimensional BP approximation, choosing the message subspace with an environment-dependent criterion improves the useful time window of the calculation.
-The remaining discrepancy should not be interpreted solely as a compression failure, because the single-site BP approximation itself is missing square-lattice loop effects.
+Figure~\ref{fig:2dInfiniteObservable} shows that TM stays close to the fit-compressed IF-BP reference longer than DM.
+The remaining discrepancy is not only compression error, because the single-site BP approximation also misses square-lattice loops.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{2D_Infinite_Observable_Hc.png}
-    \caption{Two-dimensional square-lattice observable dynamics at the critical transverse field. The model has \(h_z=0\), \(h_x=h_c=-3.04\), and initial state \(\ket{+}\). The plotted \(X(t)\) compares DM and TM message compression at \(\chi=4\) and \(\chi=8\) against a fit-compressed influence-functional belief-propagation benchmark with \(\chi=16\). TM converges toward the benchmark more efficiently than DM at the same message bond dimension, although further cluster corrections are still needed for systematic two-dimensional accuracy.}
+    \caption{Critical-field square-lattice TFIM dynamics from \(\ket{+}\). TM approaches the fit-compressed IF-BP \(\chi=16\) reference more efficiently than DM at \(\chi=4,8\).}
     \label{fig:2dInfiniteObservableHc}
 \end{figure}
 
-We further test the method at the critical transverse field \(h_x=h_c=-3.04\), shown in Fig.~\ref{fig:2dInfiniteObservableHc}.
-Here the fit-compressed IF-BP calculation with \(\chi=16\) is again used as the reference within the same single-site BP approximation.
-The TM-compressed messages approach this reference more efficiently than the DM-compressed messages at the same bond dimensions, suggesting that the advantage of RTM-style compression persists in the more challenging critical regime.
-Figure~\ref{fig:treeZ4Observable} gives a cleaner comparison on the corresponding \(z=4\) infinite tree, where the BP contraction itself is exact and the remaining error is primarily message compression rather than loop physics.
+At the critical field, Fig.~\ref{fig:2dInfiniteObservableHc} shows the same trend: TM approaches the fit-compressed IF-BP reference more efficiently.
+Figure~\ref{fig:treeZ4Observable} gives the corresponding \(z=4\) tree comparison, where BP is exact and the remaining error is primarily message compression.
 
 \section{Discussion}
 
