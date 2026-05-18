@@ -349,14 +349,14 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Finite_Observable.png}
-    \caption{Finite-chain local observable benchmark for the folded spacetime tensor network. The model is the same length-\(N=18\) one-dimensional transverse-field Ising chain used in Fig.~\ref{fig:1dFiniteAmplitude}, with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the middle-site magnetization \(Z_{N/2}(t)\). TEBD results provide the benchmark, while folded and unfolded transverse contractions are compared using RDM, RTM, and fidelity-fitting based compression. The folded RTM compression gives the most accurate low-bond-dimension result among the tested transverse-contraction schemes.}
+    \caption{Finite-chain local observable benchmark for the folded spacetime tensor network. The model is the same length-\(N=18\) one-dimensional transverse-field Ising chain used in Fig.~\ref{fig:1dFiniteAmplitude}, with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the middle-site magnetization \(Z_{N/2}(t)\). TEBD $\chi=128$ results provide the benchmark, while folded and unfolded transverse contractions are compared using RDM, RTM, and fidelity-fitting based compression. The folded RTM compression (green) gives the most accurate low-bond-dimension result among the tested transverse-contraction schemes.}
     \label{fig:1dFiniteObservable}
 \end{figure}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{1D_Infinite_Amplitude.png}
-    \caption{Infinite-chain Loschmidt amplitude per site computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\), the temporal MPS is updated by a power method until convergence. The plotted free-energy rate, \(f(t)=-\log|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle|/N\), is compared with the analytical result. RTM compression remains stable and follows the analytical curve more closely than RDM compression at the same temporal bond dimensions \(\chi=8\) and \(\chi=16\).}
+    \includegraphics[width=0.6\linewidth]{1D_Infinite_Amplitude.png}
+    \caption{Infinite-chain Loschmidt amplitude per site computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\), the temporal MPS is updated by a power method until convergence. The plotted free-energy rate, \(f(t)=-\log|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle|/N\), is compared with the analytical result. RTM compression (red) remains stable and follows the analytical curve more closely than RDM compression (blue) at the same temporal bond dimensions \(\chi=8\) and \(\chi=16\).}
     \label{fig:1dInfiniteAmplitude}
 \end{figure}
 
@@ -365,7 +365,7 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Infinite_Entropy.png}
-    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller and smoother than the RDM entropy for the tested bond dimensions. This supports the use of RTM compression for overlap-preserving transverse contraction.}
+    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller, smoother and closer to $log(T)$ than the RDM entropy for the tested bond dimensions. }
     \label{fig:1dInfiniteEntropy}
 \end{figure}
 
@@ -373,7 +373,7 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=0.7\linewidth]{1D_Infinite_Observable.png}
-    \caption{Infinite-chain local observable computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\), the temporal MPS is updated by a power method until convergence. The plotted magnetization \(Z(t)\) is compared against a finite-\(N\) TEBD benchmark. RTM compression with temporal bond dimension \(\chi=8\) tracks the benchmark more closely than RDM compression over the shown time window.}
+    \caption{Infinite-chain local observable computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\), the temporal MPS is updated by a power method until convergence. The plotted magnetization \(Z(t)\) is compared against a finite-\(N\) TEBD benchmark. RTM compression (red) with temporal bond dimension \(\chi=8\) tracks the benchmark more closely than RDM compression (blue) over the shown time window.}
     \label{fig:1dInfiniteObservable}
 \end{figure}
 
@@ -382,7 +382,7 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{Message_Propagation.png}
-    \caption{Environment-dependent message propagation on a finite tree tensor network. In standard density-matrix message compression, an outgoing message such as \(m_{3\to4}\) is compressed from the local tensor \(T_3\) and incoming messages \(m_{1\to3}\) and \(m_{2\to3}\). In the transition-matrix version, the compression of \(m_{3\to4}\) also depends on the environment message \(m_{4\to3}\), selecting a truncation subspace adapted to the contraction in which the message will be used.}
+    \caption{Environment-dependent message propagation on a finite tree tensor network. In standard density-matrix message compression (left panel), an outgoing message such as \(m_{3\to4}\) is compressed from the local tensor \(T_3\) and incoming messages \(m_{1\to3}\) and \(m_{2\to3}\). In the transition-matrix version (right panel), the compression of \(m_{3\to4}\) also depends on the environment message \(m_{4\to3}\), selecting a truncation subspace adapted to the contraction in which the message will be used.}
     \label{fig:messagePropagation}
 \end{figure}
 
