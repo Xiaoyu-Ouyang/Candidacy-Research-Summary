@@ -366,12 +366,22 @@ After this left-to-right update, a right-to-left sweep updates the right tempora
 In practice, one or two such bidirectional sweeps are usually sufficient for convergence.
 This explains the improvement in Fig.~\ref{fig:1dFiniteAmplitude}: at fixed temporal bond dimension, RTM keeps the singular directions that are most relevant to the final left-right contraction, while independent DM compression can spend bond dimension on features of each temporal MPS that have little weight in the final amplitude.
 
+The same idea becomes even more useful for local observables, where the folded tensor network is the natural object to contract.
+Folding pairs the forward and backward real-time contours before transverse compression, so local cancellations between \(U(t)\) and \(U^\dagger(t)\) are kept inside each temporal tensor rather than being spread across two separately compressed layers \cite{hastingsConnectingEntanglementTime2015,Carignano2024TemporalEntropy}.
+This reduces the temporal correlations that the boundary MPS must carry and makes the contraction focus on the influence of the environment on the local observable.
+The observable problem is also less symmetric than the amplitude problem: the temporal MPO \(E_O\) at the measured site breaks the spatial translation symmetry of the otherwise uniform network, so the left and right temporal environments must be adapted to this inhomogeneous central tensor.
+RTM compression is well suited to this setting because the truncation of each boundary is chosen with the opposite boundary and the observable-containing region in mind, rather than by minimizing the standalone compression error of a single temporal MPS.
+
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Finite_Observable.png}
     \caption{Finite-chain local observable benchmark for the folded spacetime tensor network. The model is the same length-\(N=18\) one-dimensional transverse-field Ising chain used in Fig.~\ref{fig:1dFiniteAmplitude}, with \(h_z=0\), \(h_x=-1.5\), and initial state \(\ket{\mathbf 0}\). The plotted quantity is the middle-site magnetization \(Z_{N/2}(t)\). TEBD $\chi=128$ results provide the benchmark, while folded and unfolded transverse contractions are compared using RDM, RTM, and fidelity-fitting based compression. The folded RTM compression (green) gives the most accurate low-bond-dimension result among the tested transverse-contraction schemes.}
     \label{fig:1dFiniteObservable}
 \end{figure}
+
+Figure~\ref{fig:1dFiniteObservable} shows this effect for the middle-site magnetization of the same finite chain.
+At the same temporal bond dimension, folding already improves the stability of transverse contraction, and the folded RTM result is closer to the TEBD benchmark than either folded RDM compression or the fitting-based compression shown here.
+This provides the first numerical evidence that environment-dependent truncation is advantageous not only for amplitudes, where the target is a simple left-right overlap, but also for local observables, where the central operator makes the relevant contraction explicitly inhomogeneous.
 
 \begin{figure}
     \centering
