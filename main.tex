@@ -383,6 +383,17 @@ Figure~\ref{fig:1dFiniteObservable} shows this effect for the middle-site magnet
 At the same temporal bond dimension, folding already improves the stability of transverse contraction, and the folded RTM result is closer to the TEBD benchmark than either folded RDM compression or the fitting-based compression shown here.
 This provides the first numerical evidence that environment-dependent truncation is advantageous not only for amplitudes, where the target is a simple left-right overlap, but also for local observables, where the central operator makes the relevant contraction explicitly inhomogeneous.
 
+For an infinite translationally invariant chain, the transverse contraction can be simplified further.
+Instead of sweeping across a finite system, one looks for the dominant temporal boundary MPS of the one-site or two-site spatial transfer matrix, following the power-method approach used in transverse tensor-network contractions \cite{Carignano2024TemporalEntropy,carignanoITransversejlLibraryTransverse2025,carignanoOvercomingEntanglementBarrier2025}.
+Starting from an initial temporal MPS, one repeatedly applies the temporal MPO of a unit cell and compresses the result,
+\begin{equation}
+\langle L^{(n+1)}|\simeq \mathcal C\!\left[\langle L^{(n)}|E\right],
+\end{equation}
+until the boundary MPS and the corresponding leading eigenvalue converge.
+The compression \(\mathcal C\) can be chosen as ordinary DM compression or as RTM compression, in which the opposite fixed-point boundary is used as the environment.
+The same procedure is applied to the right boundary.
+Thus the finite-chain left-right sweeps are replaced by a fixed-point iteration within one spatial unit cell.
+
 \begin{figure}
     \centering
     \includegraphics[width=0.6\linewidth]{1D_Infinite_Amplitude.png}
@@ -390,15 +401,23 @@ This provides the first numerical evidence that environment-dependent truncation
     \label{fig:1dInfiniteAmplitude}
 \end{figure}
 
+Figure~\ref{fig:1dInfiniteAmplitude} tests this infinite-chain fixed-point contraction on the Loschmidt amplitude.
+Because the target is translationally invariant, the contraction is controlled by the dominant eigenvalue of the transverse transfer matrix, which directly gives the free-energy rate \(f(t)\).
+RTM compression gives a more stable estimate of this dominant eigenvalue than DM compression at the same temporal bond dimension, especially at later times where the temporal boundary becomes harder to compress.
 
 
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Infinite_Entropy.png}
-    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller, smoother and closer to $log(T)$ than the RDM entropy for the tested bond dimensions. }
+    \caption{Temporal entanglement diagnostics for the infinite-chain amplitude tensor network. The standard temporal entropy \(S_{LL}\) is computed from a reduced density matrix of a single temporal MPS, while the generalized temporal entropy \(S_{LR}\) is computed from the reduced transition matrix built from the left and right temporal MPSs. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{\mathbf 0}\), and sampled final state \(\ket{+}\), the RTM entropy remains substantially smaller, smoother and closer to \(\log(T)\) than the RDM entropy for the tested bond dimensions.}
     \label{fig:1dInfiniteEntropy}
 \end{figure}
 
+The improvement is consistent with the generalized temporal-entropy picture developed in Refs.~\cite{Carignano2024TemporalEntropy,carignanoOvercomingEntanglementBarrier2025}.
+For translationally invariant amplitude tensor networks in the thermodynamic and large-time limits, the relevant transition-matrix entropy \(S_{LR}\) has a real part that saturates or grows at most logarithmically with the evolution time \(T\), with logarithmic growth appearing at dynamical critical points.
+This is the entropy that controls the bond dimension needed by an RTM-style transverse contraction.
+By contrast, the ordinary RDM entropy \(S_{LL}\) measures the compressibility of one temporal MPS in isolation and can grow much faster in finite-time calculations.
+Figure~\ref{fig:1dInfiniteEntropy} shows this distinction directly: the RDM-based entropy can increase sharply and make the boundary appear much harder to compress, while the RTM entropy follows the expected slower \(\log(T)\)-like behavior over the accessible time window.
 
 \begin{figure}
     \centering
@@ -406,6 +425,12 @@ This provides the first numerical evidence that environment-dependent truncation
     \caption{Infinite-chain local observable computed by transverse contraction. For the translationally invariant one-dimensional transverse-field Ising model with \(h_z=0\), \(h_x=-1.5\), initial state \(\ket{+}\), and Trotter step \(dt=0.05\), the temporal MPS is updated by a power method until convergence. The plotted magnetization \(Z(t)\) is compared against a finite-\(N\) TEBD benchmark. RTM compression (red) with temporal bond dimension \(\chi=8\) tracks the benchmark more closely than RDM compression (blue) over the shown time window.}
     \label{fig:1dInfiniteObservable}
 \end{figure}
+
+For local observables in an infinite chain, there is no identical translationally invariant amplitude network because the folded temporal MPO \(E_O\) at the measured site creates an inhomogeneous insertion.
+Nevertheless, the same fixed-point environments can be used to contract the left and right sides of the folded observable network, and the observable is then evaluated as \(\langle L|E_O|R\rangle\).
+Figure~\ref{fig:1dInfiniteObservable} shows that RTM compression remains advantageous in this setting even though the logarithmic entropy argument was derived for amplitudes.
+The RTM boundary gives a visibly better approximation to the TEBD benchmark than the corresponding DM boundary, indicating that choosing the truncation according to the final left-observable-right contraction is useful beyond the strictly translationally invariant amplitude problem.
+A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the same qualitative behavior: DM compression eventually drifts away from the benchmark, while TM compression remains accurate for substantially longer times, although at the largest times the fixed-point iteration can occasionally fail to converge cleanly.
 
 \subsection{Tree spacetime tensor network contraction}
 
