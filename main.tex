@@ -438,6 +438,8 @@ A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the sa
 
 \subsection{Tree spacetime tensor network contraction}
 
+\subsubsection{Finite trees}
+
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{Message_Propagation.png}
@@ -445,6 +447,25 @@ A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the sa
     \label{fig:messagePropagation}
 \end{figure}
 
+The transverse-contraction idea can be extended from a one-dimensional chain to a finite tree by replacing left and right temporal boundaries with directed temporal messages.
+After Trotterization, each site of the tree contributes a local temporal tensor or temporal MPO \(T_i\), and each directed edge \(i\to j\) carries a temporal MPS message \(m_{i\to j}\) that summarizes the whole branch attached to \(i\) when the edge \((i,j)\) is cut.
+For an ordinary RDM message update, the outgoing message is obtained by contracting the local tensor with all incoming messages except the one from the target direction,
+\begin{equation}
+m_{i\to j}\simeq
+\mathcal C_{\mathrm{RDM}}\!\left[
+T_i\prod_{k\in \partial i\setminus j}m_{k\to i}
+\right],
+\end{equation}
+where \(\partial i\) denotes the neighbors of \(i\).
+This is the direct tree analogue of compressing each temporal boundary independently.
+
+RTM message propagation uses the same local contraction but changes the compression criterion.
+To update \(m_{i\to j}\), one first forms the uncompressed candidate message from \(T_i\) and the incoming messages on the other branches, but the truncation basis is selected using the opposite message \(m_{j\to i}\) as an environment.
+Equivalently, the compression is chosen to preserve the mixed contraction across the edge \((i,j)\), rather than the standalone norm of \(m_{i\to j}\).
+Because this environment message is needed before the RTM update can be defined, we first initialize all directed messages by RDM compression.
+On a finite rooted tree, this is done by a leaf-to-root pass followed by a root-to-leaf pass, so every directed edge has an initial temporal MPS message.
+We then perform environment-dependent sweeps: a leaf-to-root sweep updates messages toward the root using the current reverse messages as environments, and a root-to-leaf sweep updates the opposite directions using the improved messages.
+Repeating these bidirectional sweeps gives a fixed point of the compressed message-passing equations.
 
 \begin{figure}
     \centering
@@ -452,6 +473,13 @@ A longer-time comparison in Fig.~\ref{fig:1dInfiniteObservableSupp} shows the sa
     \caption{Finite-tree Loschmidt amplitude computed by message propagation for a transverse-field Ising Hamiltonian on a binary tree of depth \(4\), with longitudinal field \(h_z=0.6\), transverse field \(h_x=-1.0\), and initial state \(\ket{\mathbf 0}\). (a) Time dependence of \(\left|\langle \mathbf 0|e^{-iHt}|\mathbf 0\rangle\right|\) for message bond dimensions \(\chi=4,8,12,16\), compared with a TEBD benchmark using \(\chi=256\). (b) Amplitude error at \(t=6.5\) as a function of message bond dimension, showing that RTM message compression gives smaller error than DM compression at the same \(\chi\). (c) Finite binary-tree geometry with depth=4 used in the calculation.}
     \label{fig:treeFiniteAmplitude}
 \end{figure}
+
+Figure~\ref{fig:treeFiniteAmplitude} tests this procedure on a finite binary-tree lattice.
+The observable is the Loschmidt amplitude, so the final scalar is obtained by contracting the converged temporal messages into the central region of the tree.
+Increasing the message bond dimension improves both RDM and RTM message propagation, as expected.
+At the same \(\chi\), RTM gives a visibly smaller amplitude error than RDM, especially in the error plot at \(t=6.5\), showing that the environment-dependent truncation is still useful beyond one-dimensional chain geometries.
+The improvement is more modest than in the one-dimensional examples: the finite tree has shorter paths from leaves to the center and many branching messages, so the advantage of optimizing a single long left-right temporal boundary is less pronounced.
+Nevertheless, the data support the same basic principle: when the target is a final contraction, the message should be compressed using the environment in which it will be contracted.
 
 
 \begin{figure}
