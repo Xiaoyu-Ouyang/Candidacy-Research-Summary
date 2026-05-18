@@ -576,50 +576,34 @@ Figure~\ref{fig:treeZ4Observable} gives a cleaner comparison on the correspondin
 
 \section{Discussion}
 
-The central message of this work is that temporal messages should be compressed with awareness of the environment in which they will be contracted.
-In ordinary RDM compression, a temporal MPS message is truncated according to its own reduced density matrix.
-This is natural if the goal is to approximate that message as an isolated object, but it is not the quantity ultimately measured in spacetime tensor-network contraction.
-For amplitudes, local observables and belief-propagation contractions, the final output is an overlap or a small local contraction involving several messages.
-RTM compression therefore chooses the truncation subspace using the opposite boundary or reverse message as an environment.
-The numerical tests in one dimension, on finite and infinite trees, and in two-dimensional BP all show the same qualitative behavior: environment-dependent messages usually delay the onset of systematic deviation at fixed bond dimension.
+The central message of this work is that temporal messages should be compressed with awareness of the contraction in which they will be used.
+RDM compression approximates each temporal MPS message as an isolated object, while amplitudes, observables, and BP contractions depend on overlaps or local contractions between several messages.
+RTM compression instead selects the truncated subspace using the opposite boundary or reverse message as an environment.
+Across the one-dimensional, tree, and two-dimensional tests above, this environment-dependent choice usually delays the onset of systematic deviation at fixed bond dimension.
 
-One design choice in the present implementation is that local observables in the tree and two-dimensional calculations were evaluated using full environment messages rather than rebuilding a separate light cone for each operator.
-The motivation is shown in Fig.~\ref{fig:1dFiniteObservableCompare}.
-In the one-dimensional chain, the temporal influence messages on the two sides of the measured site are numerically almost independent of which local operator is inserted at the center, and TM message propagation gives similar results for different operator choices.
-This suggests that, at least in the tested regime, the environment message captures a reusable influence functional of the surrounding system rather than an object tied to one particular observable.
-This observation justifies the current use of operator-independent environment messages in the tree and two-dimensional calculations.
-However, it is not a proof that light-cone constructions are unnecessary.
-A useful next step is to compare the present message-based observable contraction against explicit light-cone contractions, especially in regimes where operator spreading or slow conserved modes could make the operator dependence stronger.
+For local observables, the present implementation used full environment messages rather than rebuilding a separate light cone for each operator.
+Figure~\ref{fig:1dFiniteObservableCompare} gives the numerical motivation: in the one-dimensional chain, the influence messages on the two sides of the measured site are nearly independent of the operator inserted at the center.
+This supports the use of reusable operator-independent messages in the tree and two-dimensional calculations, but it should still be checked against explicit light-cone contractions, especially when operator spreading or conserved modes become important.
 
-The main limitation in two dimensions is not only message compression.
-Single-site BP on the square lattice replaces the true loopy lattice by a Bethe-lattice approximation, so it misses loop correlations even if each temporal message is compressed accurately.
-For quantitatively controlled two-dimensional dynamics, the BP estimate must be corrected by cluster expansions or related loop-correction schemes \cite{parkSimulatingQuantumDynamics2025}.
-The role of RTM compression in this broader program is still important: if TM-compressed messages reproduce the same cluster contributions at smaller temporal bond dimension, the cost of cluster-expanded IF-BP can be reduced substantially.
-Figure~\ref{fig:treeZ4Observable} separates this issue by testing the corresponding \(z=4\) infinite tree, where BP itself is exact.
-There, the remaining discrepancy is primarily a message-compression problem, and the environment-dependent schemes remain more stable than low-bond-dimension open-message propagation.
+In two dimensions, message compression is only one source of error.
+Single-site BP on the square lattice replaces the loopy lattice by a Bethe-lattice approximation, so loop correlations are missing even if every temporal message is accurately compressed.
+Quantitatively controlled two-dimensional dynamics will therefore require cluster expansions or related loop-correction schemes \cite{parkSimulatingQuantumDynamics2025}.
+The value of RTM in that setting is cost reduction: if TM-compressed messages reproduce the relevant cluster contributions at smaller \(\chi\), cluster-expanded IF-BP becomes cheaper.
+Figure~\ref{fig:treeZ4Observable} isolates this issue on the corresponding \(z=4\) infinite tree, where BP is exact and the remaining discrepancy mainly comes from message compression.
 
-There are also natural extensions of the message ansatz.
-In this work each directed message is represented as a one-dimensional temporal MPS.
-For loopy or higher-dimensional geometries, one could instead use richer tensor-network messages, such as block messages or PEPS-like messages, to retain correlations among several neighboring branches before applying BP-style updates.
-This idea is related to block belief propagation and tensor-network message-passing methods \cite{guoBlockBeliefPropagation2023,wangTensorNetworkMessage2023}.
-Such messages would be more expensive than MPS messages, but they may reduce the systematic BP error by carrying short-loop or multi-branch correlations explicitly.
+Several extensions are natural.
+First, the message ansatz can be enlarged.
+This work represents each directed message as a temporal MPS, but loopy or higher-dimensional geometries may benefit from block messages or PEPS-like messages that retain short-loop and multi-branch correlations explicitly \cite{guoBlockBeliefPropagation2023,wangTensorNetworkMessage2023}.
+Second, the compression itself could be made variational.
+RTM is a non-variational truncation based on the reduced transition matrix; an optimized fitting procedure targeting the final local contraction or BP residual may give a better environment-dependent message at the same bond dimension.
 
-The compression step itself can also be improved.
-RTM compression is a non-variational environment-dependent truncation: it uses the reduced transition matrix to choose a subspace adapted to the final contraction.
-This already improves over RDM compression in the tests above, but it does not guarantee the optimal compressed message for a fixed target observable or fixed BP environment.
-A variational compression method, optimized directly against the final local contraction or a local BP residual, could target the same environment-dependent objective more accurately.
-This would connect RTM to fitting-based MPO-MPS compression, but with the objective chosen for the message-passing contraction rather than for the standalone message norm.
+The main algorithmic issue is convergence.
+TM compression often gives better converged messages, but the nonlinear fixed-point iteration can be less stable than RDM at long times or high connectivity.
+Convergence accelerators such as DIIS \cite{pulayConvergenceAccelerationIterative1980,pulayImprovedSCFConvergence1982} may be useful for infinite-unit-cell updates and finite-size environment-dependent BP sweeps.
+More systematic diagnostics are also needed, including deviation time versus bond dimension, error as a function of \(T\) and \(\chi\), and temporal entanglement or transition-matrix entropy for chains, trees, and loopy BP approximations.
 
-Finally, the fixed-point algorithms need more systematic numerical stabilization and error analysis.
-TM compression improves the converged messages when it works, but the nonlinear message iteration can be less stable than RDM, especially at longer times and in higher-connectivity geometries.
-Convergence accelerators such as DIIS \cite{pulayConvergenceAccelerationIterative1980,pulayImprovedSCFConvergence1982} may be useful for both infinite-unit-cell updates and finite-size environment-dependent BP sweeps.
-For finite trees and finite two-dimensional lattices, one still needs robust update rules for BP with environment-dependent messages, where the environment used to compress a message is itself changing during the sweep.
-More diagnostics are also needed: the time at which the observable first deviates from benchmark as a function of bond dimension, the error as a joint function of \(T\) and \(\chi\), and the temporal entanglement or transition-matrix entropy of the messages on chains, trees and two-dimensional BP approximations.
-These tests would clarify when the improvement from environment-dependent compression reflects a genuinely smaller contraction-relevant manifold, and when the remaining error is instead dominated by BP loop effects or fixed-point convergence.
-
-Overall, these results support the view that messages in quantum-dynamical belief propagation should not be treated as isolated objects.
-They are useful only through the contraction in which they appear.
-Making the compression environment-dependent is therefore a direct way to align the numerical representation with the physical quantity being computed, and provides a practical route toward longer-time simulations of local quantum dynamics.
+Overall, the results support treating quantum-dynamical BP messages as contraction-dependent objects rather than standalone states.
+Environment-dependent compression aligns the numerical representation with the target observable, and provides a practical route toward longer-time simulations of local quantum dynamics.
 
 
 \begin{figure}
