@@ -346,6 +346,26 @@ In this form, \(\langle L|\) and \(|R\rangle\) play the role of temporal environ
     \label{fig:1dFiniteAmplitude}
 \end{figure}
 
+We next incorporate RTM compression into the transverse contraction algorithm.
+For the amplitude network in Fig.~\ref{fig:1dFiniteAmplitude}, we first construct an initial set of temporal boundary MPSs using standard density-matrix compression.
+Starting from the left boundary, the columns are applied from left to right,
+\begin{equation}
+\langle L_{i+1}^{(0)}|\simeq \mathcal C_{\mathrm{DM}}\!\left[\langle L_i^{(0)}|E_{i+1}\right],
+\end{equation}
+where \(\mathcal C_{\mathrm{DM}}\) denotes compression of the temporal MPS to the chosen bond dimension.
+The same procedure is then performed from right to left to initialize the right temporal MPSs,
+\begin{equation}
+|R_i^{(0)}\rangle\simeq \mathcal C_{\mathrm{DM}}\!\left[E_i|R_{i+1}^{(0)}\rangle\right].
+\end{equation}
+These two passes give a complete set of approximate left and right temporal environments, but each boundary has been compressed independently according to its own norm.
+
+RTM compression is then used in environment-dependent sweeps.
+In a left-to-right sweep, one updates \(\langle L_{i+1}|\) by applying the temporal MPO \(E_{i+1}\) to \(\langle L_i|\), but chooses the truncation basis using the already initialized right boundary \(|R_{i+1}\rangle\) as the environment.
+Thus the compression is optimized for the overlap \(\langle L_{i+1}|R_{i+1}\rangle\), which is the actual amplitude obtained by cutting the spacetime network at that bond, rather than for the standalone norm of \(\langle L_{i+1}|\).
+After this left-to-right update, a right-to-left sweep updates the right temporal MPSs in the same way, now using the improved left boundaries as environments.
+In practice, one or two such bidirectional sweeps are usually sufficient for convergence.
+This explains the improvement in Fig.~\ref{fig:1dFiniteAmplitude}: at fixed temporal bond dimension, RTM keeps the singular directions that are most relevant to the final left-right contraction, while independent DM compression can spend bond dimension on features of each temporal MPS that have little weight in the final amplitude.
+
 \begin{figure}
     \centering
     \includegraphics[width=1\linewidth]{1D_Finite_Observable.png}
