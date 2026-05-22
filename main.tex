@@ -71,12 +71,14 @@
 \noindent
 Simulating nonequilibrium quantum dynamics is difficult because the full time-evolved wavefunction can develop rapidly growing entanglement, making standard state-based tensor-network methods expensive at long times.
 In many applications, however, the desired output is not the full wavefunction but a local observable, amplitude, response function, or reduced influence functional.
-This suggests a different computational goal: instead of compressing the full state, one should compress only the information that remains relevant to the final spacetime tensor-network contraction.
+This suggests a different computational goal: instead of compressing the full state, one should compress only the information that remains relevant to the final contraction.
+After Trotterizing the time evolution, amplitudes, local observables, and influence functionals can be written as spacetime tensor networks whose spatial and temporal directions need not be contracted in the usual Schrödinger-picture order.
+Contracting such a network transversely replaces the time-evolved state by temporal matrix product state messages.
+On tree and higher-dimensional lattices, the same objects appear as tensor-network belief-propagation messages: local temporal tensors are combined with incoming temporal MPS messages to produce outgoing messages.
 
-This report develops and tests an environment-dependent message-propagation approach for this purpose.
-The central object is a temporal matrix product state message arising from transverse contraction of a spacetime tensor network.
-Conventional density-matrix compression truncates each message as an isolated object, whereas the reduced-transition-matrix compression studied here chooses the message subspace using the opposite boundary or reverse message as its contraction environment.
-This makes the compression criterion closer to the target amplitude or local observable.
+This report develops and tests an environment-dependent compression strategy for these messages.
+Conventional density-matrix compression truncates each temporal message as an isolated object, whereas the reduced-transition-matrix compression studied here chooses the message subspace using the opposite boundary or reverse message as its contraction environment.
+This makes the compression criterion closer to the target amplitude, local observable, or belief-propagation contraction.
 Numerical tests in one-dimensional finite and infinite systems, finite and infinite tree lattices, and infinite two-dimensional belief-propagation approximations show that environment-dependent compression typically delays the onset of systematic errors at fixed bond dimension.
 The improvement is strongest in one-dimensional transverse contractions and remains useful on tree and two-dimensional message-passing problems, although convergence of the nonlinear message updates and loop corrections in two dimensions remain important open issues.
 Overall, the results support treating quantum-dynamical messages as contraction-dependent objects rather than standalone states, providing a practical route toward longer-time classical simulations of local quantum dynamics.
